@@ -35,36 +35,52 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 1. 現在のセッションを確認
-    const initAuth = async () => {
+    let mounted = true;
+
+    // 現在のセッションを確認・同期する
+    const syncAuth = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        console.log("Syncing Auth...");
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        
+        if (sessionError) throw sessionError;
+
         if (session?.user) {
-          await fetchProfile(session.user);
+          if (mounted) await fetchProfile(session.user);
+        } else {
+          if (mounted) {
+            setUser(null);
+            setLoading(false);
+          }
         }
-      } catch (err) {
-        console.error("Auth initialization error:", err);
-      } finally {
-        setLoading(false);
+      } catch (err: any) {
+        console.error("Auth sync error:", err);
+        if (mounted) setLoading(false);
       }
     };
 
-    initAuth();
+    // 少し待機してから初期化（Lock競合を避けるため）
+    const timer = setTimeout(() => {
+      syncAuth();
+    }, 100);
 
-    // 2. 認証状態の変化を監視
+    // 認証状態の変化を監視
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth State Changed:", event, session?.user?.id);
+      console.log("Auth Event:", event, session?.user?.id);
       
-      // SIGNED_INイベントはログイン時だけでなく、アプリ起動時(初期化後)にも発生することがある
-      if (session?.user) {
-        await fetchProfile(session.user);
-      } else {
+      if (event === 'SIGNED_IN' || event === 'USER_UPDATED' || event === 'TOKEN_REFRESHED') {
+        if (session?.user) {
+          await fetchProfile(session.user);
+        }
+      } else if (event === 'SIGNED_OUT') {
         setUser(null);
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     return () => {
+      mounted = false;
+      clearTimeout(timer);
       subscription.unsubscribe();
     };
   }, []);
@@ -72,11 +88,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const fetchProfile = async (supabaseUser: SupabaseUser) => {
     try {
       console.log("Fetching profile for:", supabaseUser.id);
-      let { data: profile, error } = await supabase
+      
+      // タイムアウト付きでプロフィールを取得
+      const profilePromise = supabase
         .from('profiles')
         .select('*')
         .eq('id', supabaseUser.id)
         .single();
+      
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error("Profile fetch timeout")), 5000)
+      );
+
+      const { data: profile, error } = await Promise.race([
+        profilePromise,
+        timeoutPromise
+      ]) as any;
 
       if (error && error.code === 'PGRST116') {
         console.log("Profile not found, creating one...");
@@ -100,10 +127,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           .single();
 
         if (createError) throw createError;
-        profile = newProfile;
-      }
-
-      if (profile) {
+        
+        if (newProfile) {
+          setUser({
+            id: newProfile.id,
+            name: newProfile.name,
+            email: newProfile.email,
+            avatar: newProfile.avatar_url,
+            points: newProfile.points,
+            likes: newProfile.likes,
+            penaltyPoints: newProfile.penalty_points,
+            crown: newProfile.crown as "none" | "silver" | "gold",
+            hasPassedTraining: newProfile.has_passed_training,
+            achievements: newProfile.achievements
+          });
+        }
+      } else if (profile) {
         setUser({
           id: profile.id,
           name: profile.name,
@@ -119,6 +158,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (e) {
       console.error("Error fetching profile:", e);
+    } finally {
+      setLoading(false);
     }
   };
 

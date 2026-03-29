@@ -12,9 +12,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    const protocol = req.headers.get("x-forwarded-proto") || "http";
+    const protocol = req.headers.get("x-forwarded-proto") || "https";
     const host = req.headers.get("host");
-    const origin = `${protocol}://${host}`;
+    const origin = process.env.NEXT_PUBLIC_APP_URL || `${protocol}://${host}`;
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
         },
       ],
       mode: "payment",
-      success_url: `${origin}/dashboard?payment_success=true&job_id=${jobId}`,
+      success_url: `${origin}/payment/success?session_id={CHECKOUT_SESSION_ID}&job_id=${jobId}`,
       cancel_url: `${origin}/request/new?payment_cancel=true`,
       metadata: {
         jobId: jobId,
