@@ -37,32 +37,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let mounted = true;
 
-    // 1. 状態変化を監視（こちらが「真実」のメインソース）
-    // onAuthStateChange は追加直後、現在のセッション状態でも一度発火します (INITIAL_SESSION)
+    // 1. まず現在のセッションを即座に確認（マウント時の一回限り）
+    const initialize = async () => {
+      try {
+        console.log("Checking initial session...");
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session?.user && mounted) {
+          await fetchProfile(session.user);
+        } else if (!session && mounted) {
+          // セッションがないことが確定したときだけ読み込みを終了
+          setUser(null);
+          setLoading(false);
+        }
+      } catch (err) {
+        console.error("Auth initialization error:", err);
+        if (mounted) setLoading(false);
+      }
+    };
+
+    initialize();
+
+    // 2. 状態変化（ログイン・ログアウト・トークン更新）を継続的に監視
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth Event:", event, session?.user?.id);
+      console.log("Auth State Changed:", event, session?.user?.id);
       
+      // 他のタブでのログイン/ログアウトやトークン失効に対応
       if (session?.user) {
         if (mounted) await fetchProfile(session.user);
-      } else {
+      } else if (event === 'SIGNED_OUT') {
         if (mounted) {
           setUser(null);
           setLoading(false);
         }
       }
     });
-
-    // 2. 補完的に現在のセッションを一度だけ確認（マウント時のみ）
-    const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user && mounted) {
-        await fetchProfile(session.user);
-      } else if (!session && mounted) {
-        // セッションが確定で存在しない場合は、ここで読み込みを終了
-        setLoading(false);
-      }
-    };
-    checkSession();
 
     return () => {
       mounted = false;
