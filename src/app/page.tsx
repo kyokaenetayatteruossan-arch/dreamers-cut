@@ -196,8 +196,8 @@ export default function Home() {
                    <p className="text-base leading-relaxed text-foreground/80 mb-8 min-h-[4rem] relative z-10 italic font-medium">
                       「{p.msg}」
                    </p>
-                   <a href={p.link} target="_blank" rel="noreferrer" className="flex items-center justify-center w-full gap-2 text-sm font-black bg-black/5 hover:bg-black/10 text-foreground px-6 py-4 rounded-xl transition-colors relative z-10 border border-black/5 whitespace-nowrap">
-                      <ExternalLink size={16} />
+                   <a href={p.link} target="_blank" rel="noreferrer" className="flex items-center justify-center w-full gap-2 text-[13px] font-black bg-black/5 hover:bg-black/10 text-foreground px-4 py-3 rounded-xl transition-all relative z-10 border border-black/5 whitespace-nowrap group/btn shadow-sm">
+                      <ExternalLink size={14} className="group-hover/btn:scale-110 transition-transform" />
                       公式サイト / SNS を見る
                    </a>
                 </div>
