@@ -11,14 +11,15 @@ export default function Home() {
       <section className="relative min-h-[60vh] md:min-h-[70vh] flex items-center justify-center overflow-hidden pt-16">
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/hero.png"
+            src="/images/hero_light.png"
             alt="Family Memories Cinematic"
             fill
-            className="object-cover brightness-[0.4] scale-105 float-animation"
+            className="object-cover brightness-100 scale-105 float-animation"
             style={{ animationDuration: '30s' }}
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-transparent to-background" />
+          {/* 自然な明るさを活かすための薄いオーバーレイ */}
+          <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-background" />
         </div>
 
         <motion.div 
@@ -27,7 +28,7 @@ export default function Home() {
           transition={{ duration: 1, ease: "easeOut" }}
           className="relative z-10 text-center px-6"
         >
-          <h1 className="text-5xl sm:text-6xl md:text-8xl font-black leading-[1.1] tracking-tighter text-white drop-shadow-2xl">
+          <h1 className="text-5xl sm:text-6xl md:text-8xl font-black leading-[1.1] tracking-tighter text-foreground drop-shadow-sm">
             特別な思い出を、<br />
             <span className="text-gradient italic">もっと特別に。</span>
           </h1>
@@ -35,21 +36,21 @@ export default function Home() {
       </section>
 
       {/* ===== CTA: 説明文・ボタン・ログイン（写真の外） ===== */}
-      <section className="relative py-16 md:py-24 overflow-hidden">
-        {/* 背景のアクセント */}
-        <div className="absolute top-0 left-1/4 w-[400px] h-[400px] bg-primary/10 blur-[120px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-accent/10 blur-[120px] rounded-full pointer-events-none" />
+      <section className="relative py-16 md:py-24 overflow-hidden bg-background">
+        {/* 背景のアクセント - ライトモード用に淡く */}
+        <div className="absolute top-0 left-1/4 w-[400px] h-[400px] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-accent/5 blur-[120px] rounded-full pointer-events-none" />
 
         <div className="section-container relative z-10 text-center">
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-base md:text-xl max-w-2xl mx-auto mb-12 text-white/60 font-medium leading-relaxed"
+            className="text-base md:text-xl max-w-2xl mx-auto mb-12 text-foreground/70 font-medium leading-relaxed"
           >
             家族の笑顔、ペットの寝顔、旅行の感動。<br />
-            何気ない日常の動画に、<span className="text-white font-bold">プロ級の魔法</span>を吹き込みます。<br />
-            <span className="text-white/40 text-sm">頑張る若者の夢を、あなたの思い出で応援する新しいサービス。</span>
+            何気ない日常の動画に、<span className="text-primary font-bold">プロ級の魔法</span>を吹き込みます。<br />
+            <span className="text-foreground/40 text-sm">頑張る若者の夢を、あなたの思い出で応援する新しいサービス。</span>
           </motion.p>
           
           <motion.div 
@@ -68,7 +69,7 @@ export default function Home() {
             </Link>
             <Link 
               href="/market" 
-              className="w-full sm:w-auto flex items-center justify-center gap-3 px-12 py-5 text-lg font-black rounded-2xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-all group"
+              className="w-full sm:w-auto flex items-center justify-center gap-3 px-12 py-5 text-lg font-black rounded-2xl bg-black/5 border border-black/10 text-foreground hover:bg-black/10 transition-all group"
             >
               <Play size={22} className="text-secondary group-hover:scale-110 transition-transform" fill="currentColor" />
               編集して夢を叶える
@@ -82,10 +83,10 @@ export default function Home() {
             transition={{ delay: 0.3 }}
             className="flex flex-col items-center gap-1"
           >
-            <span className="text-[10px] font-bold text-white/20 uppercase tracking-widest">Already have an account?</span>
+            <span className="text-[10px] font-bold text-foreground/30 uppercase tracking-widest">Already have an account?</span>
             <Link 
               href="/login" 
-              className="text-sm font-black text-white/50 hover:text-primary transition-colors"
+              className="text-sm font-black text-foreground/50 hover:text-primary transition-colors"
             >
               こちらからログイン →
             </Link>
