@@ -8,7 +8,8 @@ import {
   Send, Paperclip, MessageSquare, 
   CheckCircle, Clock, AlertTriangle, 
   ArrowLeft, Info, Sparkles, User, History,
-  FileIcon, Image as ImageIcon, Video as VideoIcon, Loader2, Download
+  FileIcon, Image as ImageIcon, Video as VideoIcon, Loader2, Download,
+  Copy, Check
 } from "lucide-react";
 import Link from "next/link";
 import ClientOnly from "@/components/ClientOnly";
@@ -21,6 +22,7 @@ export default function ProjectRoomPage() {
   
   const [inputText, setInputText] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+  const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -71,6 +73,12 @@ export default function ProjectRoomPage() {
       setIsUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
+  };
+
+  const handleCopyToClipboard = (url: string) => {
+    navigator.clipboard.writeText(url);
+    setCopiedUrl(url);
+    setTimeout(() => setCopiedUrl(null), 2000);
   };
 
   const handleStatusChange = async (status: Job["status"]) => {
@@ -244,19 +252,55 @@ export default function ProjectRoomPage() {
                       {m.fileUrl && (
                         <div className="mt-3 overflow-hidden rounded-2xl border border-white/10 bg-black/20">
                           {m.fileUrl.match(/\.(mp4|webm|ogg|mov)$|video/i) ? (
-                            <video 
-                              src={m.fileUrl} 
-                              controls 
-                              className="max-h-80 w-full object-contain"
-                              poster="/video-placeholder.png"
-                            />
+                            <div className="flex flex-col">
+                              <video 
+                                src={m.fileUrl} 
+                                controls 
+                                className="max-h-80 w-full object-contain bg-black"
+                              />
+                              <div className="p-3 bg-white/5 flex gap-2">
+                                <a 
+                                  href={m.fileUrl} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="flex-1 py-3 bg-primary/20 hover:bg-primary/30 text-primary-light rounded-xl flex items-center justify-center gap-2 text-xs font-black transition-all border border-primary/20"
+                                >
+                                  <Download size={16} /> 保存・DL
+                                </a>
+                                <button 
+                                  onClick={() => handleCopyToClipboard(m.fileUrl!)}
+                                  className="px-4 py-3 bg-white/5 hover:bg-white/10 text-white/60 rounded-xl flex items-center justify-center gap-2 text-xs font-bold transition-all border border-white/10"
+                                >
+                                  {copiedUrl === m.fileUrl ? <Check size={16} className="text-success" /> : <Copy size={16} />}
+                                  {copiedUrl === m.fileUrl ? "OK" : "URL"}
+                                </button>
+                              </div>
+                            </div>
                           ) : m.fileUrl.match(/\.(jpg|jpeg|png|gif|webp)$|image/i) ? (
-                            <img 
-                              src={m.fileUrl} 
-                              alt="添付画像" 
-                              className="max-h-80 w-full object-contain cursor-pointer"
-                              onClick={() => window.open(m.fileUrl, '_blank')}
-                            />
+                            <div className="flex flex-col">
+                              <img 
+                                src={m.fileUrl} 
+                                alt="添付画像" 
+                                className="max-h-80 w-full object-contain cursor-pointer"
+                                onClick={() => window.open(m.fileUrl, '_blank')}
+                              />
+                              <div className="p-3 bg-white/5 flex gap-2">
+                                <a 
+                                  href={m.fileUrl} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="flex-1 py-3 bg-secondary/20 hover:bg-secondary/30 text-secondary-light rounded-xl flex items-center justify-center gap-2 text-xs font-black transition-all border border-secondary/20"
+                                >
+                                  <Download size={16} /> 画像を保存
+                                </a>
+                                <button 
+                                  onClick={() => handleCopyToClipboard(m.fileUrl!)}
+                                  className="px-4 py-3 bg-white/5 hover:bg-white/10 text-white/60 rounded-xl flex items-center justify-center gap-2 text-xs font-bold transition-all border border-white/10"
+                                >
+                                  {copiedUrl === m.fileUrl ? <Check size={16} className="text-success" /> : <Copy size={16} />}
+                                </button>
+                              </div>
+                            </div>
                           ) : (
                             <a 
                               href={m.fileUrl} 
