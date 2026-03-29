@@ -89,7 +89,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
         isSubscribed.current = false;
       };
     }
-  }, [user]);
+  }, [user?.id]); // idを監視して確実に再購読
 
   const markAsRead = async (id: string) => {
     const { error } = await supabase

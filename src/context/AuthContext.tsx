@@ -37,40 +37,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let mounted = true;
 
-    // 現在の認証状態を確認し、プロファイルを同期する
-    const initializeAuth = async () => {
-      try {
-        console.log("Initializing Auth...");
-        // getSession() は高速だが、Lock競合のリスクがあるため慎重に扱う
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        
-        if (sessionError) {
-          console.warn("Session fetch error (expected if locked):", sessionError.message);
-          // 失敗しても onAuthStateChange が後で面倒を見てくれる
-        }
-
-        if (session?.user) {
-          if (mounted) await fetchProfile(session.user);
-        } else {
-          if (mounted) {
-            setUser(null);
-            setLoading(false);
-          }
-        }
-      } catch (err: any) {
-        console.error("Auth init fatal error:", err);
-        if (mounted) setLoading(false);
-      }
-    };
-
-    // 1. まず初期化を実行
-    initializeAuth();
-
-    // 2. 状態変化を監視（こちらが「真実」のソース）
+    // 1. 状態変化を監視（こちらが「真実」のメインソース）
+    // onAuthStateChange は追加直後、現在のセッション状態でも一度発火します (INITIAL_SESSION)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth Event Notification:", event, session?.user?.id);
+      console.log("Auth Event:", event, session?.user?.id);
       
-      // SIGNED_IN, INITIAL_SESSION, TOKEN_REFRESHED などのイベントを処理
       if (session?.user) {
         if (mounted) await fetchProfile(session.user);
       } else {
@@ -80,6 +51,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       }
     });
+
+    // 2. 補完的に現在のセッションを一度だけ確認（マウント時のみ）
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user && mounted) {
+        await fetchProfile(session.user);
+      } else if (!session && mounted) {
+        // セッションが確定で存在しない場合は、ここで読み込みを終了
+        setLoading(false);
+      }
+    };
+    checkSession();
 
     return () => {
       mounted = false;
