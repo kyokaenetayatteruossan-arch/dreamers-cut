@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { useJobs } from "@/context/JobContext";
+import { useNotifications } from "@/context/NotificationContext";
 import { Sparkles, Star, Trophy, LogOut, User as UserIcon, AlertCircle, Menu, X, ArrowRight, Bell } from "lucide-react";
 import ClientOnly from "@/components/ClientOnly";
 import { useRouter } from "next/navigation";
@@ -12,8 +13,10 @@ import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
 export default function Header() {
   const { user, logout } = useAuth();
   const { jobs } = useJobs();
+  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
   const { scrollY } = useScroll();
@@ -100,23 +103,80 @@ export default function Header() {
                 </div>
 
                 {/* Notifications Bell */}
-                <div className="relative group">
+                <div className="relative">
                    <button 
-                     onClick={() => router.push('/dashboard')}
-                     className="p-2.5 rounded-xl hover:bg-white/10 text-white/60 hover:text-white transition-all border border-transparent hover:border-white/10"
+                     onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+                     className={`p-2.5 rounded-xl transition-all border ${isNotificationsOpen ? 'bg-white/10 border-white/20 text-white' : 'hover:bg-white/10 text-white/60 hover:text-white border-transparent'}`}
                    >
                      <Bell size={20} />
-                     {/* 自分の依頼が進行中になった、などの通知ドット */}
-                     {(jobs.filter(j => (j.requestorId === user.id && j.status === 'ongoing') || (j.providerId === user.id && j.status === 'delivered')).length > 0) && (
-                       <span className="absolute top-2 right-2 flex h-2.5 w-2.5">
+                     {unreadCount > 0 && (
+                       <span className="absolute top-2 right-2 flex h-4 w-4">
                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                         <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary border border-background"></span>
+                         <span className="relative inline-flex items-center justify-center rounded-full h-4 w-4 bg-primary text-[8px] text-white border border-background">
+                           {unreadCount > 9 ? '9+' : unreadCount}
+                         </span>
                        </span>
                      )}
                    </button>
-                   <div className="absolute top-full right-0 mt-2 w-48 py-3 px-4 glass-card border border-white/10 rounded-2xl text-[10px] font-bold text-white/60 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all shadow-2xl pointer-events-none z-50">
-                      進行中または更新された案件があります
-                   </div>
+                   
+                   <AnimatePresence>
+                     {isNotificationsOpen && (
+                       <motion.div 
+                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                         animate={{ opacity: 1, y: 0, scale: 1 }}
+                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                         className="absolute top-full right-0 mt-4 w-[340px] glass-card border border-white/10 rounded-3xl shadow-2xl z-50 overflow-hidden"
+                       >
+                         <div className="p-4 border-b border-white/5 flex items-center justify-between bg-white/5">
+                           <h3 className="text-xs font-black uppercase tracking-widest text-white/70">お知らせ</h3>
+                           <button 
+                            onClick={() => markAllAsRead()}
+                            className="text-[10px] font-bold text-primary hover:underline"
+                           >
+                             すべて既読にする
+                           </button>
+                         </div>
+                         
+                         <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
+                           {notifications.length > 0 ? (
+                             notifications.map((n) => (
+                               <button 
+                                 key={n.id}
+                                 onClick={() => {
+                                   markAsRead(n.id);
+                                   if (n.link) router.push(n.link);
+                                   setIsNotificationsOpen(false);
+                                 }}
+                                 className={`w-full p-4 flex gap-4 text-left hover:bg-white/5 transition-colors border-b border-white/5 last:border-0 ${!n.is_read ? 'bg-primary/5' : ''}`}
+                               >
+                                 <div className={`mt-1 w-2 h-2 rounded-full shrink-0 ${!n.is_read ? 'bg-primary shadow-glow' : 'bg-transparent'}`} />
+                                 <div className="space-y-1">
+                                   <div className={`text-xs font-bold ${!n.is_read ? 'text-white' : 'text-white/60'}`}>{n.title}</div>
+                                   <div className="text-[11px] text-white/40 leading-relaxed">{n.content}</div>
+                                   <div className="text-[9px] text-white/20 font-bold">{new Date(n.created_at).toLocaleString()}</div>
+                                 </div>
+                               </button>
+                             ))
+                           ) : (
+                             <div className="p-10 text-center space-y-3">
+                               <Bell size={32} className="mx-auto text-white/5" />
+                               <p className="text-xs text-white/20 font-bold">通知はまだありません</p>
+                             </div>
+                           )}
+                         </div>
+                         
+                         <div className="p-3 bg-white/5 text-center">
+                            <Link 
+                              href="/dashboard" 
+                              onClick={() => setIsNotificationsOpen(false)}
+                              className="text-[10px] font-black text-white/30 hover:text-white transition-colors"
+                            >
+                              すべて表示
+                            </Link>
+                         </div>
+                       </motion.div>
+                     )}
+                   </AnimatePresence>
                 </div>
 
                 <Link href="/dashboard" className="flex items-center gap-3 hover:opacity-80 transition-opacity pl-2 border-l border-white/10">

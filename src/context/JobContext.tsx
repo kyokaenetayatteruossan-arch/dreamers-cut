@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import { useNotifications } from "./NotificationContext";
 
 export interface Message {
   id: string;
@@ -45,6 +46,7 @@ interface JobContextType {
 const JobContext = createContext<JobContextType | undefined>(undefined);
 
 export function JobProvider({ children }: { children: React.ReactNode }) {
+  const { addNotification } = useNotifications();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -161,7 +163,7 @@ export function JobProvider({ children }: { children: React.ReactNode }) {
 
   const acceptJob = async (jobId: string, providerId: string, providerName: string) => {
     console.log("Accepting job:", jobId, "by:", providerName);
-    const { data, error, count } = await supabase
+    const { data, error } = await supabase
       .from('jobs')
       .update({ 
         status: 'ongoing', 
@@ -171,18 +173,10 @@ export function JobProvider({ children }: { children: React.ReactNode }) {
       .eq('id', jobId)
       .select();
 
-    if (error) {
-      console.error("AcceptJob Supabase Error:", error);
-      throw error;
-    }
+    if (error) throw error;
+    if (!data || data.length === 0) throw new Error("案件の更新に失敗しました。");
 
-    if (!data || data.length === 0) {
-      console.error("No rows updated. Check RLS policies or job status.");
-      throw new Error("案件の更新に失敗しました。既に関連付けられているか、権限がありません。");
-    }
-
-    console.log("Job accepted successfully, refreshing list...");
-    // 状態を確実に同期させるために再取得
+    // 状態を同期させるために再取得
     const { data: refreshedData } = await supabase
       .from('jobs')
       .select(`*, messages (*)`)
@@ -190,6 +184,17 @@ export function JobProvider({ children }: { children: React.ReactNode }) {
     
     if (refreshedData) {
       setJobs(refreshedData.map(mapJobData));
+      
+      const acceptedJob = refreshedData.find(j => j.id === jobId);
+      if (acceptedJob) {
+        await addNotification(
+          acceptedJob.requestor_id,
+          'job_accepted',
+          '依頼が引き受けられました',
+          `「${acceptedJob.title}」がクリエイターに承諾されました。`,
+          `/project/${jobId}`
+        );
+      }
     }
   };
 
@@ -200,6 +205,22 @@ export function JobProvider({ children }: { children: React.ReactNode }) {
       .eq('id', jobId);
 
     if (error) throw error;
+
+    // 相手への通知
+    const job = jobs.find(j => j.id === jobId);
+    if (job) {
+      const targetUserId = status === 'completed' ? job.providerId : job.requestorId;
+      if (targetUserId) {
+        const statusLabels: any = { delivered: '納品完了', completed: '全工程完了', cancelled: 'キャンセル' };
+        await addNotification(
+          targetUserId,
+          'status_changed',
+          `案件状況：${statusLabels[status] || status}`,
+          `「${job.title}」の状態が更新されました。`,
+          `/project/${jobId}`
+        );
+      }
+    }
   };
 
   const sendMessage = async (jobId: string, senderId: string, senderName: string, text: string, fileUrl?: string) => {
@@ -214,6 +235,21 @@ export function JobProvider({ children }: { children: React.ReactNode }) {
       }]);
 
     if (error) throw error;
+
+    // 相手への通知
+    const job = jobs.find(j => j.id === jobId);
+    if (job) {
+      const targetUserId = senderId === job.requestorId ? job.providerId : job.requestorId;
+      if (targetUserId) {
+        await addNotification(
+          targetUserId,
+          'new_message',
+          '新着メッセージ',
+          `${senderName}: ${text.slice(0, 30)}${text.length > 30 ? '...' : ''}`,
+          `/project/${jobId}`
+        );
+      }
+    }
   };
 
   const deleteJob = async (jobId: string) => {

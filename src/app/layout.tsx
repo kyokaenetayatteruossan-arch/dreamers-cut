@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { JobProvider } from "@/context/JobContext";
+import { NotificationProvider } from "@/context/NotificationContext";
 import Header from "@/components/Header";
 
 export const metadata: Metadata = {
@@ -18,10 +19,12 @@ export default function RootLayout({
     <html lang="ja">
       <body>
         <AuthProvider>
-          <JobProvider>
-            <Header />
-            {children}
-          </JobProvider>
+          <NotificationProvider>
+            <JobProvider>
+              <Header />
+              {children}
+            </JobProvider>
+          </NotificationProvider>
         </AuthProvider>
       </body>
     </html>
