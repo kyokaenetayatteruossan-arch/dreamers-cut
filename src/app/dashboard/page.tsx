@@ -9,17 +9,18 @@ import {
   Trophy, Star, AlertCircle, Play, 
   PlusCircle, Award, ShieldCheck,
   ChevronRight, Gift, Sparkles as SparklesIcon, ArrowRight,
-  ClipboardList, MessageSquare, Clock
+  ClipboardList, MessageSquare, Clock, History as HistoryIcon, Loader2, Info
 } from "lucide-react";
 import ClientOnly from "@/components/ClientOnly";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function DashboardPage() {
   const { user, loading: authLoading, updateUser } = useAuth();
-  const { jobs, loading: jobsLoading, updateJobStatus } = useJobs();
+  const { jobs, loading: jobsLoading, updateJobStatus, deleteJob, clearAllTestData } = useJobs();
   const router = useRouter();
   const [isDrawing, setIsDrawing] = useState(false);
   const [lastResult, setLastResult] = useState<string | null>(null);
+  const [isCleaning, setIsCleaning] = useState(false);
 
   const handleCancelJob = async (e: React.MouseEvent, jobId: string) => {
     e.preventDefault();
@@ -31,20 +32,61 @@ export default function DashboardPage() {
 
     try {
       await updateJobStatus(jobId, "cancelled");
-      alert("依頼を取り下げました。");
     } catch (err) {
       console.error("Cancel Error:", err);
       alert("取り下げに失敗しました。時間をおいて再度お試しください。");
     }
   };
 
+  const handleDeleteJob = async (e: React.MouseEvent, jobId: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!window.confirm("この案件をシステムから完全に削除しますか？\n履歴も一切残りません。")) {
+      return;
+    }
+
+    try {
+      await deleteJob(jobId);
+    } catch (err) {
+      console.error("Delete Error:", err);
+      alert("削除に失敗しました。");
+    }
+  };
+
+  const handleClearAll = async () => {
+    if (!window.confirm("【警告】すべてのテスト用案件とチャット履歴を完全に消去しますか？\nこの操作は元に戻せません。")) {
+      return;
+    }
+
+    setIsCleaning(true);
+    try {
+      await clearAllTestData();
+      alert("すべてのテストデータを消去しました。");
+    } catch (err) {
+      console.error("Clear All Error:", err);
+      alert("エラーが発生しました。一部のデータが残っている可能性があります。");
+    } finally {
+      setIsCleaning(false);
+    }
+  };
+
   const loading = authLoading || jobsLoading;
 
-  // 1. 自分が引き受けた仕事 (Ongoing or Delivered)
-  const myWork = jobs.filter(j => j.providerId === user?.id && j.status !== 'cancelled');
+  // 1. 自分が引き受けた仕事 (進行中 or 納品済み)
+  const myWork = jobs
+    .filter(j => j.providerId === user?.id && j.status !== 'cancelled' && j.status !== 'completed')
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   
-  // 2. 自分が投稿した依頼
-  const myRequests = jobs.filter(j => j.requestorId === user?.id && j.status !== 'cancelled');
+  // 2. 自分が投稿した現在の依頼
+  const myRequests = jobs
+    .filter(j => j.requestorId === user?.id && j.status !== 'cancelled' && j.status !== 'completed')
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+  // 3. 過去の履歴（完了済み）
+  const history = jobs
+    .filter(j => (j.requestorId === user?.id || j.providerId === user?.id) && j.status === 'completed')
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -258,14 +300,23 @@ export default function DashboardPage() {
                           <span className={`text-[10px] font-black px-2.5 py-1 rounded-full border ${getStatusColor(job.status)} uppercase tracking-wider`}>
                             {getStatusLabel(job.status)}
                           </span>
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-2">
                             {job.status === 'pending' && (
-                              <button 
-                                onClick={(e) => handleCancelJob(e, job.id)}
-                                className="text-[10px] font-black text-error/60 hover:text-error transition-colors underline underline-offset-2"
-                              >
-                                取り下げる
-                              </button>
+                              <div className="flex items-center gap-2">
+                                <button 
+                                  onClick={(e) => handleCancelJob(e, job.id)}
+                                  className="text-[10px] font-black text-white/30 hover:text-white transition-colors"
+                                >
+                                  取り下げ
+                                </button>
+                                <span className="text-white/10 text-[10px]">|</span>
+                                <button 
+                                  onClick={(e) => handleDeleteJob(e, job.id)}
+                                  className="text-[10px] font-black text-error/60 hover:text-error transition-colors"
+                                >
+                                  完全に削除
+                                </button>
+                              </div>
                             )}
                             <span className="text-xs font-bold text-white/30 tracking-tight">¥{job.price.toLocaleString()}</span>
                           </div>
@@ -301,6 +352,42 @@ export default function DashboardPage() {
                   )}
                 </div>
               </motion.div>
+
+              {/* History Section (Completed) */}
+              {history.length > 0 && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="lg:col-span-2 mt-12 mb-8"
+                >
+                  <div className="flex items-center justify-between px-2 mb-6">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-white/30">
+                        <HistoryIcon size={24} />
+                      </div>
+                      <h2 className="text-xl font-bold text-white/50 tracking-tight">完了済みの履歴</h2>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {history.map((job) => (
+                      <Link 
+                        key={job.id}
+                        href={`/project/${job.id}`}
+                        className="block glass-card p-4 rounded-2xl opacity-60 hover:opacity-100 transition-all border border-white/5 group"
+                      >
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center gap-3">
+                            <span className="text-[10px] font-black px-2 py-0.5 rounded-full border border-primary/30 text-primary uppercase">完了</span>
+                            <h4 className="font-bold text-white text-sm line-clamp-1">{job.title}</h4>
+                          </div>
+                          <span className="text-xs font-bold text-white/20">¥{job.price.toLocaleString()}</span>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
             </div>
 
             {/* Action Grid */}
@@ -423,6 +510,19 @@ export default function DashboardPage() {
                 </div>
             </div>
 
+            {/* Admin/Test Cleanup Zone */}
+            <div className="mt-24 pt-12 border-t border-white/5 text-center">
+               <p className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em] mb-6">Development Tools</p>
+               <button 
+                 onClick={handleClearAll}
+                 disabled={isCleaning}
+                 className="px-10 py-4 rounded-2xl bg-error/10 text-error border border-error/20 text-xs font-black hover:bg-error/20 transition-all active:scale-95 disabled:opacity-50 inline-flex items-center gap-3"
+               >
+                 {isCleaning ? <Loader2 className="animate-spin" size={16} /> : <AlertCircle size={16} />}
+                 {isCleaning ? "消去中..." : "すべてのテストデータを一括消去する"}
+               </button>
+               <p className="mt-4 text-[10px] text-white/10 font-medium">※すべての案件とメッセージ履歴が削除されます。開発時のみご利用ください。</p>
+            </div>
           </div>
         </main>
       )}

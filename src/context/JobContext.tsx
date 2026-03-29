@@ -36,6 +36,8 @@ interface JobContextType {
   addJob: (job: Omit<Job, "id" | "status" | "createdAt" | "messages">) => Promise<string | undefined>;
   acceptJob: (jobId: string, providerId: string, providerName: string) => Promise<void>;
   updateJobStatus: (jobId: string, status: Job["status"]) => Promise<void>;
+  deleteJob: (jobId: string) => Promise<void>;
+  clearAllTestData: () => Promise<void>;
   sendMessage: (jobId: string, senderId: string, senderName: string, text: string, fileUrl?: string) => Promise<void>;
 }
 
@@ -213,8 +215,29 @@ export function JobProvider({ children }: { children: React.ReactNode }) {
     if (error) throw error;
   };
 
+  const deleteJob = async (jobId: string) => {
+    // まずメッセージを削除（外部キー制約がある場合のため）
+    await supabase.from('messages').delete().eq('job_id', jobId);
+    // その後、案件本体を削除
+    const { error } = await supabase.from('jobs').delete().eq('id', jobId);
+    if (error) throw error;
+    
+    // ローカル状態も更新
+    setJobs(prev => prev.filter(j => j.id !== jobId));
+  };
+
+  const clearAllTestData = async () => {
+    // 開発/テスト用の全削除
+    console.warn("CALLED: clearAllTestData - Deleting all records...");
+    const { error: mError } = await supabase.from('messages').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+    const { error: jError } = await supabase.from('jobs').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+    
+    if (mError || jError) throw (mError || jError);
+    setJobs([]);
+  };
+
   return (
-    <JobContext.Provider value={{ jobs, loading, addJob, acceptJob, updateJobStatus, sendMessage }}>
+    <JobContext.Provider value={{ jobs, loading, addJob, acceptJob, updateJobStatus, deleteJob, clearAllTestData, sendMessage }}>
       {children}
     </JobContext.Provider>
   );

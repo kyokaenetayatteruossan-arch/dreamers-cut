@@ -92,8 +92,8 @@ export default function MarketPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-              {jobs.filter(j => j.status === "pending").length > 0 ? (
-                jobs.filter(j => j.status === "pending").map((job, idx) => {
+              {jobs.filter(j => j.status === "pending" && j.requestorId !== user?.id).length > 0 ? (
+                jobs.filter(j => j.status === "pending" && j.requestorId !== user?.id).map((job, idx) => {
                   const jobCreatedAt = new Date(job.createdAt).getTime();
                   const hoursElapsed = (currentTime - jobCreatedAt) / (1000 * 60 * 60);
                   const isBeginnerOnly = hoursElapsed < 12;
