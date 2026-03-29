@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabase";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 
@@ -87,12 +87,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  // 重複フェッチを防ぐための簡易ロック
-  let isFetchingProfile = false;
+  // 重複フェッチを防ぐためのフラグ (useRefでレンダリングを跨いで保持)
+  const isFetchingRef = useRef(false);
 
-  const fetchProfile = async (supabaseUser: SupabaseUser) => {
-    if (isFetchingProfile) return;
-    isFetchingProfile = true;
+  const fetchProfile = async (supabaseUser: { id: string, email?: string, user_metadata: any }) => {
+    if (isFetchingRef.current) {
+      console.log("Already fetching profile, skipping...");
+      return;
+    }
+    isFetchingRef.current = true;
 
     try {
       console.log("Fetching profile for:", supabaseUser.id);
@@ -157,7 +160,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (e) {
       console.error("Profile fetch error:", e);
     } finally {
-      isFetchingProfile = false;
+      isFetchingRef.current = false;
       setLoading(false);
     }
   };
@@ -231,7 +234,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (error) {
       console.error("Failed to update profile in DB:", error);
       // 失敗した場合は再取得して同期
-      await fetchProfile({ id: user.id } as SupabaseUser);
+      await fetchProfile({ id: user.id, email: user.email, user_metadata: {} });
     }
   };
 

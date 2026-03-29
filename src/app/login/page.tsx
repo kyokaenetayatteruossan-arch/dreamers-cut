@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -12,8 +12,15 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const { signIn, signInWithGoogle } = useAuth();
+  const { user, signIn, signInWithGoogle } = useAuth();
   const router = useRouter();
+
+  // ログイン状態を監視して、ユーザー情報が取得できたらダッシュボードへ
+  useEffect(() => {
+    if (user) {
+      router.push("/dashboard");
+    }
+  }, [user, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,10 +31,7 @@ export default function LoginPage() {
     
     try {
       await signIn(email, password);
-      // 少し待機してセッションが確実に同期されるようにする
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 800);
+      // 遷移は useEffect(user監視) に任せる
     } catch (err: any) {
       setError(err.message || "ログインに失敗しました。");
       setLoading(false);

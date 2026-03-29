@@ -260,7 +260,8 @@ export default function ProjectRoomPage() {
                               />
                               <div className="p-3 bg-white/5 flex gap-2">
                                 <a 
-                                  href={m.fileUrl} 
+                                  href={`${m.fileUrl}${m.fileUrl.includes('?') ? '&' : '?'}download=${encodeURIComponent(m.text.slice(0, 20) || 'video')}.mp4`} 
+                                  download={`${m.text.slice(0, 20) || 'video'}.mp4`}
                                   target="_blank" 
                                   rel="noopener noreferrer"
                                   className="flex-1 py-3 bg-primary/20 hover:bg-primary/30 text-primary-light rounded-xl flex items-center justify-center gap-2 text-xs font-black transition-all border border-primary/20"
@@ -286,7 +287,8 @@ export default function ProjectRoomPage() {
                               />
                               <div className="p-3 bg-white/5 flex gap-2">
                                 <a 
-                                  href={m.fileUrl} 
+                                  href={`${m.fileUrl}${m.fileUrl.includes('?') ? '&' : '?'}download=${encodeURIComponent('image')}.png`} 
+                                  download="image.png"
                                   target="_blank" 
                                   rel="noopener noreferrer"
                                   className="flex-1 py-3 bg-secondary/20 hover:bg-secondary/30 text-secondary-light rounded-xl flex items-center justify-center gap-2 text-xs font-black transition-all border border-secondary/20"
