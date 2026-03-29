@@ -2,22 +2,22 @@
 
 :root {
   /* Premium Sunset/Cosmic Palette */
-  --primary: hsl(340, 100%, 65%); /* Vibrant Pink/Red */
-  --primary-dark: hsl(340, 90%, 55%);
-  --secondary: hsl(35, 100%, 60%); /* Warm Orange/Gold */
-  --accent: hsl(265, 85%, 65%); /* Cosmic Purple */
+  --primary: hsl(338, 95%, 60%); /* Vibrant Pink */
+  --primary-dark: hsl(338, 90%, 50%);
+  --secondary: hsl(32, 98%, 55%); /* Golden Orange */
+  --accent: hsl(265, 85%, 62%); /* Nebula Purple */
   --success: hsl(145, 63%, 42%);
   --error: hsl(348, 83%, 55%);
   
   /* Background / Surface */
-  --background: hsl(220, 30%, 5%); /* Deep Dark Blue for Premium feel */
+  --background: hsl(230, 40%, 4%); /* True Void Dark Blue */
   --foreground: hsl(210, 20%, 98%);
   
   /* Glassmorphism Tokens */
-  --glass-bg: rgba(20, 25, 40, 0.4);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
-  --glass-highlight: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  --glass-bg: rgba(15, 20, 35, 0.5); /* Deeper, richer glass */
+  --glass-border: rgba(255, 255, 255, 0.12); /* Slightly more prominent border */
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+  --glass-highlight: inset 0 1px 1px rgba(255, 255, 255, 0.15);
   
   /* Gradients */
   --grad-sunset: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);

@@ -24,12 +24,16 @@ export default function RegisterPage() {
     setError("");
 
     try {
+      console.log("Starting signUp process for:", email);
       await signUp(email, password, name);
-      // SupabaseのsignUp後、開発設定によってはメール確認が必要ですが
-      // デフォルトでは自動ログインまたは確認待ちになります。
-      // ここではダッシュボードへ遷移を試みます。
-      router.push("/dashboard");
+      console.log("SignUp successful, waiting a moment for session sync...");
+      
+      // 少し待機してセッションが確実に同期されるようにする（本番環境の遅延対策）
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 1000);
     } catch (err: any) {
+      console.error("SignUp Error:", err);
       setError(err.message || "アカウント作成に失敗しました。");
       setLoading(false);
     }

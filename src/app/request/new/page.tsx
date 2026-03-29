@@ -32,10 +32,13 @@ export default function NewRequestPage() {
   const handleNext = () => setStep(s => s + 1);
   const handleBack = () => setStep(s => s - 1);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleSubmit = async () => {
-    if (!user) return;
+    if (!user || isSubmitting) return;
+    setIsSubmitting(true);
     try {
-      await addJob({
+      const jobId = await addJob({
         title,
         mainCharacter,
         sentences,
@@ -46,10 +49,29 @@ export default function NewRequestPage() {
         requestorId: user.id,
         requestorName: user.name,
       });
-      alert("依頼が完了しました！マーケットに公開されます。");
-      router.push("/dashboard");
+
+      // Stripe Checkoutセッションを作成
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: price,
+          jobId,
+          title,
+        }),
+      });
+
+      const { url, error } = await res.json();
+      if (error) throw new Error(error);
+
+      // Stripeの決済画面にリダイレクト
+      window.location.href = url;
     } catch (err) {
-      alert("依頼の送信に失敗しました。もう一度お試しください。");
+      console.error("Payment Error:", err);
+      alert("決済画面への移動に失敗しました。もう一度お試しください。");
+      setIsSubmitting(false);
     }
   };
 
@@ -229,9 +251,22 @@ export default function NewRequestPage() {
                       <ChevronRight size={24} className="group-hover:translate-x-1 transition-transform" />
                     </button>
                   ) : (
-                    <button onClick={handleSubmit} className="flex-[2] py-5 rounded-2xl bg-grad-sunset text-white font-black text-xl flex items-center justify-center gap-2 group shadow-xl active:scale-95 glow-effect">
-                      決済して依頼を投稿する
-                      <ChevronRight size={28} className="group-hover:translate-x-1 transition-transform" />
+                    <button 
+                      onClick={handleSubmit} 
+                      disabled={isSubmitting}
+                      className={`flex-[2] py-5 rounded-2xl bg-grad-sunset text-white font-black text-xl flex items-center justify-center gap-2 group shadow-xl active:scale-95 glow-effect ${isSubmitting ? "opacity-50 cursor-wait" : ""}`}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                          決済処理中...
+                        </>
+                      ) : (
+                        <>
+                          決済して依頼を投稿する
+                          <ChevronRight size={28} className="group-hover:translate-x-1 transition-transform" />
+                        </>
+                      )}
                     </button>
                   )}
                </div>

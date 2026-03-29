@@ -53,17 +53,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // 2. 認証状態の変化を監視
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      try {
-        if (session?.user) {
-          await fetchProfile(session.user);
-        } else {
-          setUser(null);
-        }
-      } catch (err) {
-        console.error("Auth state change error:", err);
-      } finally {
-        setLoading(false);
+      console.log("Auth State Changed:", event, session?.user?.id);
+      
+      // SIGNED_INイベントはログイン時だけでなく、アプリ起動時(初期化後)にも発生することがある
+      if (session?.user) {
+        await fetchProfile(session.user);
+      } else {
+        setUser(null);
       }
+      setLoading(false);
     });
 
     return () => {
@@ -73,7 +71,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchProfile = async (supabaseUser: SupabaseUser) => {
     try {
-      // profilesテーブルからデータを取得
+      console.log("Fetching profile for:", supabaseUser.id);
       let { data: profile, error } = await supabase
         .from('profiles')
         .select('*')
@@ -81,7 +79,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .single();
 
       if (error && error.code === 'PGRST116') {
-        // プロフィールが存在しない場合は新規作成（サインアップ直後など）
+        console.log("Profile not found, creating one...");
         const { data: newProfile, error: createError } = await supabase
           .from('profiles')
           .insert([
@@ -145,10 +143,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     });
     if (error) throw error;
-    if (data.user) {
-      // fetchProfile will be called by onAuthStateChange
-      await fetchProfile(data.user);
-    }
+    // Note: fetchProfile will be triggered by onAuthStateChange
   };
 
   const signIn = async (email: string, password: string) => {
@@ -157,9 +152,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       password,
     });
     if (error) throw error;
-    if (data.user) {
-      await fetchProfile(data.user);
-    }
+    // Note: fetchProfile will be triggered by onAuthStateChange
   };
 
   const logout = async () => {

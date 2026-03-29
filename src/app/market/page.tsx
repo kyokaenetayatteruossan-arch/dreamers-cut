@@ -10,12 +10,14 @@ import {
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import ClientOnly from "@/components/ClientOnly";
+import { motion } from "framer-motion";
 
 export default function MarketPage() {
   const { user } = useAuth();
   const { jobs, loading, acceptJob } = useJobs();
   const router = useRouter();
   const [currentTime, setCurrentTime] = useState(Date.now());
+  const [acceptingId, setAcceptingId] = useState<string | null>(null);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(Date.now()), 60000);
@@ -23,14 +25,18 @@ export default function MarketPage() {
   }, []);
 
   const handleAccept = async (jobId: string) => {
-    if (!user) return;
+    if (!user || acceptingId) return;
     if (confirm("この案件を請け負いますか？依頼者に通知が送られます。")) {
+       setAcceptingId(jobId);
        try {
          await acceptJob(jobId, user.id, user.name);
          alert("案件を正式に請け負いました。自動的にプロジェクトルームへ移動します。");
          router.push(`/project/${jobId}`);
-       } catch (err) {
-         alert("エラーが発生しました。もう一度お試しください。");
+       } catch (err: any) {
+         console.error("HandleAccept Error:", err);
+         alert(err.message || "エラーが発生しました。もう一度お試しください。");
+       } finally {
+         setAcceptingId(null);
        }
     }
   };
@@ -93,14 +99,14 @@ export default function MarketPage() {
                   const isBeginnerOnly = hoursElapsed < 12;
                   const isForbiddenForPro = isBeginnerOnly && user.achievements > 0;
                   
-                  // Staggered animation based on index
-                  const animationDelay = Math.min(idx * 100, 500);
-
                   return (
-                    <div 
+                    <motion.div 
                       key={job.id} 
-                      className="glass-card p-8 rounded-[32px] relative overflow-hidden flex flex-col hover:shadow-2xl transition-all hover:-translate-y-2 group group-hover:border-white/20"
-                      style={{ animationDelay: `${animationDelay}ms` }}
+                      initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: idx * 0.1 }}
+                      whileHover={{ y: -8, transition: { duration: 0.2 } }}
+                      className="glass-card p-8 rounded-[32px] relative overflow-hidden flex flex-col hover:shadow-2xl group group-hover:border-white/20"
                     >
                       
                       <div className="flex flex-wrap gap-2 mb-6 relative z-10">
@@ -145,24 +151,30 @@ export default function MarketPage() {
                         ) : (
                           <button 
                             onClick={() => handleAccept(job.id)}
-                            className="bg-secondary text-white py-3 px-6 sm:px-8 rounded-2xl text-sm font-black flex items-center gap-2 group hover:scale-105 active:scale-95 transition-all shadow-lg shadow-secondary/20 hover:shadow-secondary/40 glow-effect"
+                            disabled={acceptingId === job.id}
+                            className={`bg-secondary text-white py-3 px-6 sm:px-8 rounded-2xl text-sm font-black flex items-center gap-2 group hover:scale-105 active:scale-95 transition-all shadow-lg shadow-secondary/20 hover:shadow-secondary/40 glow-effect ${acceptingId === job.id ? 'opacity-50 cursor-not-allowed' : ''}`}
                           >
-                             請け負う
-                             <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                             {acceptingId === job.id ? '処理中...' : (
+                               <>
+                                 請け負う
+                                 <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                               </>
+                             )}
                           </button>
                         )}
                       </div>
 
                       <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-                    </div>
+                    </motion.div>
                   );
                 })
               ) : (
-                <div className="col-span-full py-32 text-center glass-card rounded-[40px] shadow-inner relative overflow-hidden">
+                <div className="col-span-full py-32 text-center glass-card rounded-[40px] shadow-inner relative overflow-hidden backdrop-blur-xl border border-white/10">
                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/5 pointer-events-none" />
-                   <Sparkles className="mx-auto mb-8 text-white/10 float-animation" size={80} />
+                   <Sparkles className="mx-auto mb-8 text-white/10" size={80} />
                    <p className="text-white/80 font-bold text-2xl tracking-tight mb-2">現在募集中の案件はありません</p>
                    <p className="text-base text-white/40 font-medium">誰かが特別な思い出を編集してくれるのを待っています。<br />しばらく経ってから再度ご確認ください。</p>
+                   {loading && <p className="text-secondary mt-4 animate-pulse uppercase tracking-widest font-black text-xs">データ読み込み中...</p>}
                 </div>
               )}
             </div>

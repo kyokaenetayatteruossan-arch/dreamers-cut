@@ -1,7 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { Play, Heart, Star, Sparkles, ArrowRight, ExternalLink, ShieldCheck, Clock, Zap } from "lucide-react";
-
+import { motion, useScroll, useTransform } from "framer-motion";
 export default function Home() {
   return (
     <main className="min-h-screen bg-background text-foreground">
@@ -22,11 +24,21 @@ export default function Home() {
           <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent opacity-30 blur-[100px] rounded-full mix-blend-screen" />
         </div>
 
-        <div className="section-container relative z-10 text-center text-white px-4 animate-in">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8 border-white/20 bg-white/5 text-sm font-semibold tracking-wide backdrop-blur-md">
+        <motion.div 
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="section-container relative z-10 text-center text-white px-4"
+        >
+          <motion.div 
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.8 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8 border-white/20 bg-white/5 text-sm font-semibold tracking-wide backdrop-blur-md"
+          >
             <Sparkles size={16} className="text-secondary animate-pulse" />
             <span className="text-gradient">夢追い人の応援プロジェクト</span>
-          </div>
+          </motion.div>
           
           <h1 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight drop-shadow-lg leading-tight">
             特別な思い出を、<br />
@@ -41,7 +53,7 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
             <Link 
               href="/request/new" 
-              className="btn-primary flex items-center gap-2 group px-10 py-5 text-lg glow-effect shadow-2xl shadow-primary/30"
+              className="btn-primary flex items-center gap-2 group px-10 py-5 text-lg glow-effect shadow-2xl shadow-primary/30 hover:scale-105"
             >
               動画編集を依頼する
               <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
@@ -54,10 +66,15 @@ export default function Home() {
               編集して夢を叶える
             </Link>
           </div>
-          <div className="mt-8 text-sm font-bold text-white/40 animate-in delay-300">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
+            className="mt-8 text-sm font-bold text-white/40"
+          >
             登録済みの方は <Link href="/login" className="text-white hover:text-primary underline underline-offset-4 decoration-white/20 hover:decoration-primary transition-all">こちらからログイン</Link>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* Concept Section */}
@@ -68,7 +85,13 @@ export default function Home() {
           <p className="text-foreground/50 mb-16 max-w-2xl mx-auto">プロ品質を求めない代わりに、安価で温かみのあるやりとりを重視しています。初心者でも安心して飛び込めるやさしい世界を目指しています。</p>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-8 rounded-3xl glass-card text-left">
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.6 }}
+              className="p-8 rounded-3xl glass-card text-left"
+            >
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white mb-6 shadow-lg shadow-primary/20">
                 <Heart size={28} />
               </div>
@@ -76,9 +99,15 @@ export default function Home() {
               <p className="text-foreground/70 leading-relaxed">
                 誰かの特別な思い出に「BGM」や「テロップ」という魔法をかける。感謝されながら報酬を得られる、とてもやりがいのある仕事です。
               </p>
-            </div>
+            </motion.div>
             
-            <div className="p-8 rounded-3xl glass-card text-left delay-100">
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="p-8 rounded-3xl glass-card text-left"
+            >
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-secondary to-primary flex items-center justify-center text-white mb-6 shadow-lg shadow-secondary/20">
                 <Zap size={28} />
               </div>
@@ -86,9 +115,15 @@ export default function Home() {
               <p className="text-foreground/70 leading-relaxed">
                 サイト内の「30分学習動画」を見るだけで基本をマスター！テストに合格すれば、育児中のママさんや学生でもすぐに始められます。
               </p>
-            </div>
+            </motion.div>
             
-            <div className="p-8 rounded-3xl glass-card text-left delay-200">
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="p-8 rounded-3xl glass-card text-left"
+            >
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-success to-teal-500 flex items-center justify-center text-white mb-6 shadow-lg shadow-success/20">
                 <ShieldCheck size={28} />
               </div>
@@ -96,7 +131,7 @@ export default function Home() {
               <p className="text-foreground/70 leading-relaxed">
                 依頼時の事前決済（仮払い）システムを導入。未払いの心配もなく、サイト内チャットで安全に動画の受け渡しが完了します。
               </p>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>

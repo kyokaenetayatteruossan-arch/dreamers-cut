@@ -33,7 +33,7 @@ export interface Job {
 interface JobContextType {
   jobs: Job[];
   loading: boolean;
-  addJob: (job: Omit<Job, "id" | "status" | "createdAt" | "messages">) => Promise<void>;
+  addJob: (job: Omit<Job, "id" | "status" | "createdAt" | "messages">) => Promise<string | undefined>;
   acceptJob: (jobId: string, providerId: string, providerName: string) => Promise<void>;
   updateJobStatus: (jobId: string, status: Job["status"]) => Promise<void>;
   sendMessage: (jobId: string, senderId: string, senderName: string, text: string, fileUrl?: string) => Promise<void>;
@@ -48,6 +48,7 @@ export function JobProvider({ children }: { children: React.ReactNode }) {
   // 1. 初期データ取得
   useEffect(() => {
     const fetchJobs = async () => {
+      console.log("Fetching jobs from Supabase...");
       // 案件とそれに紐づく全メッセージを取得
       const { data: jobsData, error } = await supabase
         .from('jobs')
@@ -60,6 +61,7 @@ export function JobProvider({ children }: { children: React.ReactNode }) {
       if (error) {
         console.error("Error fetching jobs:", error);
       } else if (jobsData) {
+        console.log("Jobs fetched successfully:", jobsData.length, "items");
         setJobs(jobsData.map(mapJobData));
       }
       setLoading(false);
@@ -134,7 +136,7 @@ export function JobProvider({ children }: { children: React.ReactNode }) {
   });
 
   const addJob = async (jobData: Omit<Job, "id" | "status" | "createdAt" | "messages">) => {
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('jobs')
       .insert([{
         title: jobData.title,
@@ -147,22 +149,45 @@ export function JobProvider({ children }: { children: React.ReactNode }) {
         requestor_id: jobData.requestorId,
         requestor_name: jobData.requestorName,
         status: 'pending'
-      }]);
+      }])
+      .select();
 
     if (error) throw error;
+    return data?.[0]?.id;
   };
 
   const acceptJob = async (jobId: string, providerId: string, providerName: string) => {
-    const { error } = await supabase
+    console.log("Accepting job:", jobId, "by:", providerName);
+    const { data, error, count } = await supabase
       .from('jobs')
       .update({ 
         status: 'ongoing', 
         provider_id: providerId, 
         provider_name: providerName 
       })
-      .eq('id', jobId);
+      .eq('id', jobId)
+      .select();
 
-    if (error) throw error;
+    if (error) {
+      console.error("AcceptJob Supabase Error:", error);
+      throw error;
+    }
+
+    if (!data || data.length === 0) {
+      console.error("No rows updated. Check RLS policies or job status.");
+      throw new Error("案件の更新に失敗しました。既に関連付けられているか、権限がありません。");
+    }
+
+    console.log("Job accepted successfully, refreshing list...");
+    // 状態を確実に同期させるために再取得
+    const { data: refreshedData } = await supabase
+      .from('jobs')
+      .select(`*, messages (*)`)
+      .order('created_at', { ascending: false });
+    
+    if (refreshedData) {
+      setJobs(refreshedData.map(mapJobData));
+    }
   };
 
   const updateJobStatus = async (jobId: string, status: Job["status"]) => {

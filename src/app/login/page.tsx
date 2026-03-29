@@ -24,7 +24,10 @@ export default function LoginPage() {
     
     try {
       await signIn(email, password);
-      router.push("/dashboard");
+      // 少し待機してセッションが確実に同期されるようにする
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 800);
     } catch (err: any) {
       setError(err.message || "ログインに失敗しました。");
       setLoading(false);

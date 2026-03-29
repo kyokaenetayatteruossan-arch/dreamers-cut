@@ -4,18 +4,51 @@ import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useJobs } from "@/context/JobContext";
 import { 
   Trophy, Star, AlertCircle, Play, 
   PlusCircle, Award, ShieldCheck,
-  ChevronRight, Gift, Sparkles as SparklesIcon, ArrowRight
+  ChevronRight, Gift, Sparkles as SparklesIcon, ArrowRight,
+  ClipboardList, MessageSquare, Clock
 } from "lucide-react";
 import ClientOnly from "@/components/ClientOnly";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function DashboardPage() {
-  const { user, loading, updateUser } = useAuth();
+  const { user, loading: authLoading, updateUser } = useAuth();
+  const { jobs, loading: jobsLoading } = useJobs();
   const router = useRouter();
   const [isDrawing, setIsDrawing] = useState(false);
   const [lastResult, setLastResult] = useState<string | null>(null);
+
+  const loading = authLoading || jobsLoading;
+
+  // 1. 自分が引き受けた仕事 (Ongoing or Delivered)
+  const myWork = jobs.filter(j => j.providerId === user?.id);
+  
+  // 2. 自分が投稿した依頼
+  const myRequests = jobs.filter(j => j.requestorId === user?.id);
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "pending": return "bg-white/10 text-white/60";
+      case "ongoing": return "bg-secondary/20 text-secondary border-secondary/30";
+      case "delivered": return "bg-success/20 text-success border-success/30";
+      case "completed": return "bg-primary/20 text-primary border-primary/30";
+      default: return "bg-white/5 text-white/40";
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case "pending": return "募集中";
+      case "ongoing": return "進行中";
+      case "delivered": return "納品完了";
+      case "completed": return "完了";
+      case "cancelled": return "キャンセル";
+      default: return status;
+    }
+  };
 
   const handleDraw = async () => {
     if (!user || user.points < 10) return;
@@ -121,6 +154,126 @@ export default function DashboardPage() {
                   </div>
                 </div>
               </div>
+            </div>
+
+            {/* My Work & My Requests Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+              
+              {/* My Work (As a Provider) */}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="space-y-6"
+              >
+                <div className="flex items-center justify-between px-2">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary">
+                      <Award size={24} />
+                    </div>
+                    <h2 className="text-2xl font-bold text-white tracking-tight">受託した仕事</h2>
+                  </div>
+                  <span className="text-xs font-bold text-white/30 uppercase tracking-widest">{myWork.length} 件</span>
+                </div>
+
+                <div className="space-y-4">
+                  {myWork.length > 0 ? (
+                    myWork.map((job) => (
+                      <Link 
+                        key={job.id}
+                        href={`/project/${job.id}`}
+                        className="block glass-card p-5 rounded-3xl hover:bg-white/10 transition-all border border-white/5 group relative overflow-hidden"
+                      >
+                        <div className="flex justify-between items-start mb-3">
+                          <span className={`text-[10px] font-black px-2.5 py-1 rounded-full border ${getStatusColor(job.status)} uppercase tracking-wider`}>
+                            {getStatusLabel(job.status)}
+                          </span>
+                          <span className="text-xs font-bold text-white/30 tracking-tight">¥{job.reward.toLocaleString()}</span>
+                        </div>
+                        <h4 className="font-bold text-white mb-3 line-clamp-1 group-hover:text-secondary transition-colors">{job.title}</h4>
+                        <div className="flex items-center justify-between text-[10px] font-bold text-white/40">
+                          <div className="flex items-center gap-2">
+                             <Clock size={12} />
+                             <span>{new Date(job.createdAt).toLocaleDateString()}</span>
+                          </div>
+                          <div className="flex items-center gap-1 text-secondary group-hover:translate-x-1 transition-transform">
+                             ROOMへ入る <ChevronRight size={14} />
+                          </div>
+                        </div>
+                      </Link>
+                    ))
+                  ) : (
+                    <div className="py-12 text-center rounded-3xl border border-dashed border-white/10 bg-white/5">
+                       <ClipboardList className="mx-auto mb-4 text-white/10" size={40} />
+                       <p className="text-sm font-bold text-white/30">現在、受託中の仕事はありません</p>
+                       <Link href="/market" className="text-xs font-black text-secondary hover:underline mt-4 inline-block">マーケットで探す →</Link>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+
+              {/* My Requests (As a Requestor) */}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="space-y-6"
+              >
+                <div className="flex items-center justify-between px-2">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                      <PlusCircle size={24} />
+                    </div>
+                    <h2 className="text-2xl font-bold text-white tracking-tight">自分の依頼</h2>
+                  </div>
+                  <span className="text-xs font-bold text-white/30 uppercase tracking-widest">{myRequests.length} 件</span>
+                </div>
+
+                <div className="space-y-4">
+                  {myRequests.length > 0 ? (
+                    myRequests.map((job) => (
+                      <Link 
+                        key={job.id}
+                        href={job.status === 'pending' ? '#' : `/project/${job.id}`}
+                        className={`block glass-card p-5 rounded-3xl transition-all border border-white/5 group relative overflow-hidden ${job.status === 'pending' ? 'cursor-default' : 'hover:bg-white/10'}`}
+                      >
+                        <div className="flex justify-between items-start mb-3">
+                          <span className={`text-[10px] font-black px-2.5 py-1 rounded-full border ${getStatusColor(job.status)} uppercase tracking-wider`}>
+                            {getStatusLabel(job.status)}
+                          </span>
+                          <span className="text-xs font-bold text-white/30 tracking-tight">¥{job.price.toLocaleString()}</span>
+                        </div>
+                        <h4 className="font-bold text-white mb-3 line-clamp-1">{job.title}</h4>
+                        <div className="flex items-center justify-between text-[10px] font-bold text-white/40">
+                          <div className="flex items-center gap-2">
+                             <Clock size={12} />
+                             <span>{new Date(job.createdAt).toLocaleDateString()}</span>
+                          </div>
+                          {job.status !== 'pending' ? (
+                            <div className="flex items-center gap-1 text-primary group-hover:translate-x-1 transition-transform">
+                               ROOMへ入る <ChevronRight size={14} />
+                            </div>
+                          ) : (
+                            <span className="text-[9px] text-white/20 italic font-medium">担当者の決定を待っています</span>
+                          )}
+                        </div>
+                        {job.status === 'ongoing' && (
+                          <div className="absolute top-2 right-2 flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                          </div>
+                        )}
+                      </Link>
+                    ))
+                  ) : (
+                    <div className="py-12 text-center rounded-3xl border border-dashed border-white/10 bg-white/5">
+                       <MessageSquare className="mx-auto mb-4 text-white/10" size={40} />
+                       <p className="text-sm font-bold text-white/30">依頼した案件はまだありません</p>
+                       <Link href="/request/new" className="text-xs font-black text-primary hover:underline mt-4 inline-block">新しく依頼する →</Link>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
             </div>
 
             {/* Action Grid */}
