@@ -39,6 +39,7 @@ interface JobContextType {
   deleteJob: (jobId: string) => Promise<void>;
   clearAllTestData: () => Promise<void>;
   sendMessage: (jobId: string, senderId: string, senderName: string, text: string, fileUrl?: string) => Promise<void>;
+  uploadFile: (file: File) => Promise<string | undefined>;
 }
 
 const JobContext = createContext<JobContextType | undefined>(undefined);
@@ -236,8 +237,31 @@ export function JobProvider({ children }: { children: React.ReactNode }) {
     setJobs([]);
   };
 
+  const uploadFile = async (file: File) => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Math.random()}.${fileExt}`;
+    const filePath = `chat/${fileName}`;
+
+    console.log("Uploading file to Supabase Storage:", filePath);
+    const { error: uploadError, data } = await supabase.storage
+      .from('chat-attachments')
+      .upload(filePath, file);
+
+    if (uploadError) {
+      console.error("Upload Error:", uploadError);
+      throw uploadError;
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('chat-attachments')
+      .getPublicUrl(filePath);
+
+    console.log("File uploaded successfully. Public URL:", publicUrl);
+    return publicUrl;
+  };
+
   return (
-    <JobContext.Provider value={{ jobs, loading, addJob, acceptJob, updateJobStatus, deleteJob, clearAllTestData, sendMessage }}>
+    <JobContext.Provider value={{ jobs, loading, addJob, acceptJob, updateJobStatus, deleteJob, clearAllTestData, sendMessage, uploadFile }}>
       {children}
     </JobContext.Provider>
   );

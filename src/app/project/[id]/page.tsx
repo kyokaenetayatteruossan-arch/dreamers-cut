@@ -7,7 +7,8 @@ import { useParams, useRouter } from "next/navigation";
 import { 
   Send, Paperclip, MessageSquare, 
   CheckCircle, Clock, AlertTriangle, 
-  ArrowLeft, Info, Sparkles, User, History
+  ArrowLeft, Info, Sparkles, User, History,
+  FileIcon, Image as ImageIcon, Video as VideoIcon, Loader2, Download
 } from "lucide-react";
 import Link from "next/link";
 import ClientOnly from "@/components/ClientOnly";
@@ -15,11 +16,13 @@ import ClientOnly from "@/components/ClientOnly";
 export default function ProjectRoomPage() {
   const { id } = useParams();
   const { user, loading: authLoading } = useAuth();
-  const { jobs, loading: jobsLoading, updateJobStatus, sendMessage } = useJobs();
+  const { jobs, loading: jobsLoading, updateJobStatus, sendMessage, uploadFile } = useJobs();
   const router = useRouter();
   
   const [inputText, setInputText] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const job = useMemo(() => jobs.find(j => j.id === id), [jobs, id]);
 
@@ -36,6 +39,37 @@ export default function ProjectRoomPage() {
       setInputText("");
     } catch (err) {
       alert("メッセージの送信に失敗しました。");
+    }
+  };
+
+  const handleFileClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user || !job) return;
+
+    // 50MB制限 (簡易)
+    if (file.size > 50 * 1024 * 1024) {
+      alert("ファイルサイズが大きすぎます（上限50MB）。");
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const publicUrl = await uploadFile(file);
+      if (publicUrl) {
+        const fileType = file.type.startsWith('video/') ? '動画' : 
+                         file.type.startsWith('image/') ? '画像' : 'ファイル';
+        await sendMessage(job.id, user.id, user.name, `[${fileType}を添付しました]`, publicUrl);
+      }
+    } catch (err) {
+      console.error("Upload Error:", err);
+      alert("ファイルのアップロードに失敗しました。");
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
 
@@ -207,6 +241,41 @@ export default function ProjectRoomPage() {
                       : "bg-white/10 text-white border border-white/10 rounded-tl-none"
                     }`}>
                       {m.text}
+                      {m.fileUrl && (
+                        <div className="mt-3 overflow-hidden rounded-2xl border border-white/10 bg-black/20">
+                          {m.fileUrl.match(/\.(mp4|webm|ogg|mov)$|video/i) ? (
+                            <video 
+                              src={m.fileUrl} 
+                              controls 
+                              className="max-h-80 w-full object-contain"
+                              poster="/video-placeholder.png"
+                            />
+                          ) : m.fileUrl.match(/\.(jpg|jpeg|png|gif|webp)$|image/i) ? (
+                            <img 
+                              src={m.fileUrl} 
+                              alt="添付画像" 
+                              className="max-h-80 w-full object-contain cursor-pointer"
+                              onClick={() => window.open(m.fileUrl, '_blank')}
+                            />
+                          ) : (
+                            <a 
+                              href={m.fileUrl} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-3 p-4 hover:bg-white/5 transition-colors"
+                            >
+                              <div className="p-2 bg-white/10 rounded-lg">
+                                <FileIcon size={20} />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="text-xs font-bold truncate">添付ファイルを表示</div>
+                                <div className="text-[10px] text-white/40">クリックして開く</div>
+                              </div>
+                              <Download size={16} className="text-white/40" />
+                            </a>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))
@@ -216,9 +285,20 @@ export default function ProjectRoomPage() {
             {/* Input */}
             <div className="p-6 bg-white/5 border-t border-white/10 relative z-20">
               <div className="flex gap-3 items-center">
-                 <button className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center hover:bg-white/10 transition-all text-white/40 hover:text-white border border-white/5 active:scale-90">
-                    <Paperclip size={24} />
-                 </button>
+                  <input 
+                    type="file" 
+                    ref={fileInputRef} 
+                    onChange={handleFileChange}
+                    className="hidden" 
+                    accept="video/*,image/*,.pdf,.zip"
+                  />
+                  <button 
+                    onClick={handleFileClick}
+                    disabled={isUploading}
+                    className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center hover:bg-white/10 transition-all text-white/40 hover:text-white border border-white/5 active:scale-90 disabled:opacity-50"
+                  >
+                    {isUploading ? <Loader2 className="animate-spin" size={20} /> : <Paperclip size={24} />}
+                  </button>
                  <div className="flex-1 relative">
                    <input 
                       value={inputText}
