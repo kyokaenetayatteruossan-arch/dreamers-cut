@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       {/* ===== Hero: 写真 + キャッチコピーだけ ===== */}
-      <section className="relative min-h-[70vh] md:min-h-screen flex items-center justify-center overflow-hidden pt-16">
+      <section className="relative h-screen min-h-[700px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/hero_light.png"
@@ -95,7 +95,7 @@ export default function Home() {
       </section>
 
       {/* Concept Section */}
-      <section id="concept" className="py-24 relative overflow-hidden bg-secondary/[0.04] border-y border-secondary/10">
+      <section id="concept" className="py-24 relative overflow-hidden bg-indigo-50/50 border-y border-indigo-100/50">
         <div className="absolute top-0 right-0 w-64 h-64 bg-secondary/10 blur-[100px] rounded-full" />
         <div className="section-container text-center relative z-10">
           <h2 className="text-3xl md:text-5xl mb-4 font-extrabold tracking-tight">なぜ、Dreamer&apos;s Cut なのか</h2>
@@ -154,7 +154,7 @@ export default function Home() {
       </section>
 
       {/* Promotion Slider (High Achievers) */}
-      <section className="py-24 relative overflow-hidden bg-gradient-to-b from-primary/[0.05] to-background">
+      <section className="py-24 relative overflow-hidden bg-rose-50/50 border-b border-rose-100/30">
         <div className="absolute left-0 bottom-0 w-96 h-96 bg-primary/20 blur-[120px] rounded-full" />
         <div className="section-container relative z-10">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
@@ -166,38 +166,38 @@ export default function Home() {
               <h2 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">今月の特大ドリーマー</h2>
               <p className="text-foreground/50">実績100件を突破したトップクリエイターへの特典として、無料でサイト内宣伝枠を提供しています。</p>
             </div>
-            <Link href="/market" className="text-sm font-bold text-gradient flex items-center gap-1 hover:opacity-80 transition-opacity">
+            <Link href="/market" className="text-sm font-black text-gradient flex items-center gap-1 hover:opacity-80 transition-opacity whitespace-nowrap">
               案件を探してトップを目指す <ArrowRight size={16} />
             </Link>
           </div>
 
-          <div className="flex gap-8 overflow-x-auto pb-8 snap-x no-scrollbar">
+          <div className="flex gap-10 overflow-x-auto pb-12 snap-x no-scrollbar">
              {[
                { name: "サトシ", jobs: 124, msg: "主にペット動画を得意としています！インスタも見てね。最高の思い出を作ろう！", link: "https://instagram.com" },
                { name: "ユキ", jobs: 310, msg: "家族の記念日動画ならお任せください。将来は映画監督を目指して勉強中です！", link: "https://youtube.com" },
                { name: "ケンタ", jobs: 105, msg: "スポーツイベントのダイジェスト編集をしています。自営業の宣伝も兼ねてます！", link: "https://kenta-edit.com" }
              ].map((p, idx) => (
-                <div key={idx} className="min-w-[320px] md:min-w-[420px] glass-card p-8 rounded-3xl snap-center relative overflow-hidden border border-primary/5">
-                   <div className="absolute top-0 right-0 p-4 opacity-10">
-                     <Star size={80} fill="currentColor" className="text-secondary" />
+                <div key={idx} className="min-w-[320px] md:min-w-[480px] glass-card p-10 md:p-12 rounded-[2.5rem] snap-center relative overflow-hidden border border-primary/10 shadow-xl hover:shadow-2xl transition-all">
+                   <div className="absolute top-0 right-0 p-6 opacity-10">
+                     <Star size={100} fill="currentColor" className="text-secondary" />
                    </div>
-                   <div className="flex items-center gap-4 mb-6 relative z-10">
-                      <div className="w-16 h-16 rounded-full bg-grad-sunset flex items-center justify-center text-white text-2xl font-bold border-4 border-white shadow-lg shadow-primary/20">
+                   <div className="flex items-center gap-6 mb-8 relative z-10">
+                      <div className="w-20 h-20 rounded-full bg-grad-sunset flex items-center justify-center text-white text-3xl font-black border-4 border-white shadow-lg shadow-primary/20">
                         {p.name.charAt(0)}
                       </div>
                       <div>
-                         <div className="text-xl font-bold text-foreground">{p.name} 様</div>
-                         <div className="text-sm text-secondary font-bold flex items-center gap-1 mt-1">
-                            <Star size={14} fill="currentColor" />
+                         <div className="text-2xl font-black text-foreground">{p.name} 様</div>
+                         <div className="text-base text-secondary font-black flex items-center gap-1.5 mt-1">
+                            <Star size={18} fill="currentColor" />
                             実績 {p.jobs} 件達成
                          </div>
                       </div>
                    </div>
-                   <p className="text-base leading-relaxed text-foreground/80 mb-8 min-h-[4rem] relative z-10 italic font-medium">
+                   <p className="text-lg leading-relaxed text-foreground/80 mb-10 min-h-[5rem] relative z-10 italic font-bold">
                       「{p.msg}」
                    </p>
-                   <a href={p.link} target="_blank" rel="noreferrer" className="flex items-center justify-center w-full gap-2 text-[13px] font-black bg-black/5 hover:bg-black/10 text-foreground px-4 py-3 rounded-xl transition-all relative z-10 border border-black/5 whitespace-nowrap group/btn shadow-sm">
-                      <ExternalLink size={14} className="group-hover/btn:scale-110 transition-transform" />
+                   <a href={p.link} target="_blank" rel="noreferrer" className="flex items-center justify-center w-full gap-2.5 text-[15px] font-black bg-black/5 hover:bg-black/10 text-foreground px-6 py-4 rounded-2xl transition-all relative z-10 border border-black/5 whitespace-nowrap group/btn shadow-sm">
+                      <ExternalLink size={18} className="group-hover/btn:scale-110 transition-transform" />
                       公式サイト / SNS を見る
                    </a>
                 </div>
