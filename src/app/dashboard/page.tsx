@@ -16,18 +16,35 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function DashboardPage() {
   const { user, loading: authLoading, updateUser } = useAuth();
-  const { jobs, loading: jobsLoading } = useJobs();
+  const { jobs, loading: jobsLoading, updateJobStatus } = useJobs();
   const router = useRouter();
   const [isDrawing, setIsDrawing] = useState(false);
   const [lastResult, setLastResult] = useState<string | null>(null);
 
+  const handleCancelJob = async (e: React.MouseEvent, jobId: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!window.confirm("この依頼を取り下げますか？（この操作は取り消せません）")) {
+      return;
+    }
+
+    try {
+      await updateJobStatus(jobId, "cancelled");
+      alert("依頼を取り下げました。");
+    } catch (err) {
+      console.error("Cancel Error:", err);
+      alert("取り下げに失敗しました。時間をおいて再度お試しください。");
+    }
+  };
+
   const loading = authLoading || jobsLoading;
 
   // 1. 自分が引き受けた仕事 (Ongoing or Delivered)
-  const myWork = jobs.filter(j => j.providerId === user?.id);
+  const myWork = jobs.filter(j => j.providerId === user?.id && j.status !== 'cancelled');
   
   // 2. 自分が投稿した依頼
-  const myRequests = jobs.filter(j => j.requestorId === user?.id);
+  const myRequests = jobs.filter(j => j.requestorId === user?.id && j.status !== 'cancelled');
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -241,7 +258,17 @@ export default function DashboardPage() {
                           <span className={`text-[10px] font-black px-2.5 py-1 rounded-full border ${getStatusColor(job.status)} uppercase tracking-wider`}>
                             {getStatusLabel(job.status)}
                           </span>
-                          <span className="text-xs font-bold text-white/30 tracking-tight">¥{job.price.toLocaleString()}</span>
+                          <div className="flex items-center gap-3">
+                            {job.status === 'pending' && (
+                              <button 
+                                onClick={(e) => handleCancelJob(e, job.id)}
+                                className="text-[10px] font-black text-error/60 hover:text-error transition-colors underline underline-offset-2"
+                              >
+                                取り下げる
+                              </button>
+                            )}
+                            <span className="text-xs font-bold text-white/30 tracking-tight">¥{job.price.toLocaleString()}</span>
+                          </div>
                         </div>
                         <h4 className="font-bold text-white mb-3 line-clamp-1">{job.title}</h4>
                         <div className="flex items-center justify-between text-[10px] font-bold text-white/40">

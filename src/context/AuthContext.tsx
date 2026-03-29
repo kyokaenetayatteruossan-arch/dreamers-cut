@@ -37,13 +37,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let mounted = true;
 
-    // 現在のセッションを確認・同期する
-    const syncAuth = async () => {
+    // 現在の認証状態を確認し、プロファイルを同期する
+    const initializeAuth = async () => {
       try {
-        console.log("Syncing Auth...");
+        console.log("Initializing Auth...");
+        // getSession() は高速だが、Lock競合のリスクがあるため慎重に扱う
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         
-        if (sessionError) throw sessionError;
+        if (sessionError) {
+          console.warn("Session fetch error (expected if locked):", sessionError.message);
+          // 失敗しても onAuthStateChange が後で面倒を見てくれる
+        }
 
         if (session?.user) {
           if (mounted) await fetchProfile(session.user);
@@ -54,59 +58,53 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         }
       } catch (err: any) {
-        console.error("Auth sync error:", err);
+        console.error("Auth init fatal error:", err);
         if (mounted) setLoading(false);
       }
     };
 
-    // 少し待機してから初期化（Lock競合を避けるため）
-    const timer = setTimeout(() => {
-      syncAuth();
-    }, 100);
+    // 1. まず初期化を実行
+    initializeAuth();
 
-    // 認証状態の変化を監視
+    // 2. 状態変化を監視（こちらが「真実」のソース）
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth Event:", event, session?.user?.id);
+      console.log("Auth Event Notification:", event, session?.user?.id);
       
-      if (event === 'SIGNED_IN' || event === 'USER_UPDATED' || event === 'TOKEN_REFRESHED') {
-        if (session?.user) {
-          await fetchProfile(session.user);
+      // SIGNED_IN, INITIAL_SESSION, TOKEN_REFRESHED などのイベントを処理
+      if (session?.user) {
+        if (mounted) await fetchProfile(session.user);
+      } else {
+        if (mounted) {
+          setUser(null);
+          setLoading(false);
         }
-      } else if (event === 'SIGNED_OUT') {
-        setUser(null);
-        setLoading(false);
       }
     });
 
     return () => {
       mounted = false;
-      clearTimeout(timer);
       subscription.unsubscribe();
     };
   }, []);
 
+  // 重複フェッチを防ぐための簡易ロック
+  let isFetchingProfile = false;
+
   const fetchProfile = async (supabaseUser: SupabaseUser) => {
+    if (isFetchingProfile) return;
+    isFetchingProfile = true;
+
     try {
       console.log("Fetching profile for:", supabaseUser.id);
       
-      // タイムアウト付きでプロフィールを取得
-      const profilePromise = supabase
+      const { data: profile, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', supabaseUser.id)
         .single();
-      
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error("Profile fetch timeout")), 5000)
-      );
-
-      const { data: profile, error } = await Promise.race([
-        profilePromise,
-        timeoutPromise
-      ]) as any;
 
       if (error && error.code === 'PGRST116') {
-        console.log("Profile not found, creating one...");
+        console.log("Creating new profile...");
         const { data: newProfile, error: createError } = await supabase
           .from('profiles')
           .insert([
@@ -157,8 +155,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
       }
     } catch (e) {
-      console.error("Error fetching profile:", e);
+      console.error("Profile fetch error:", e);
     } finally {
+      isFetchingProfile = false;
       setLoading(false);
     }
   };
