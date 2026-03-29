@@ -8,73 +8,92 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden pt-16">
+      {/* Hero Section */}
+      <section className="relative min-h-[90vh] md:h-screen flex items-center justify-center overflow-hidden pt-20">
         {/* Background Layers */}
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/hero.png"
             alt="Family Memories Cinematic"
             fill
-            className="object-cover brightness-50 scale-105 float-animation"
-            style={{ animationDuration: '20s' }}
+            className="object-cover brightness-[0.35] scale-105 float-animation"
+            style={{ animationDuration: '30s' }}
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-transparent to-background" />
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary opacity-30 blur-[100px] rounded-full mix-blend-screen" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent opacity-30 blur-[100px] rounded-full mix-blend-screen" />
+          {/* 高級感のあるグラデーションオーバーレイ */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-background via-transparent to-primary/10" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/90" />
+          
+          {/* 動的な光の演出 */}
+          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/20 blur-[120px] rounded-full mix-blend-screen animate-pulse" />
+          <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-accent/20 blur-[120px] rounded-full mix-blend-screen animate-pulse" style={{ animationDelay: '2s' }} />
         </div>
 
         <motion.div 
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: "easeOut" }}
-          className="section-container relative z-10 text-center text-white px-4"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+          className="section-container relative z-10 text-center px-6"
         >
-          <motion.div 
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.8 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8 border-white/20 bg-white/5 text-sm font-semibold tracking-wide backdrop-blur-md"
-          >
-            <Sparkles size={16} className="text-secondary animate-pulse" />
-            <span className="text-gradient">夢追い人の応援プロジェクト</span>
-          </motion.div>
-          
-          <h1 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight drop-shadow-lg leading-tight">
-            特別な思い出を、<br />
-            <span className="text-gradient italic font-black">もっと特別に。</span>
-          </h1>
-          
-          <p className="text-lg md:text-xl max-w-2xl mx-auto mb-10 text-white/80 font-medium leading-relaxed">
-            家族の笑顔、ペットの寝顔、旅行の感動。何気ない日常の動画にプロ級の息吹を吹き込みます。
-            頑張る若者の夢を、あなたの思い出で支える。新しい形のシェアリング・エコノミー。
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-            <Link 
-              href="/request/new" 
-              className="btn-primary flex items-center gap-2 group px-10 py-5 text-lg glow-effect shadow-2xl shadow-primary/30 hover:scale-105"
+          <div className="max-w-4xl mx-auto py-12 px-6 rounded-[3rem] backdrop-blur-[2px] bg-white/[0.02] border border-white/[0.05] shadow-2xl">
+            <motion.div 
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="inline-flex items-center gap-3 px-5 py-2 rounded-full border border-white/10 bg-white/5 text-[10px] md:text-xs font-black uppercase tracking-[0.2em] mb-10 text-primary-light"
             >
-              動画編集を依頼する
-              <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <Link 
-              href="/market" 
-              className="glass px-10 py-5 rounded-lg font-semibold hover:bg-white/10 transition-colors flex items-center gap-2"
+              <Sparkles size={14} className="animate-spin-slow" />
+              <span>夢追い人の応援プロジェクト</span>
+            </motion.div>
+            
+            <h1 className="text-4xl sm:text-6xl md:text-8xl font-black mb-8 leading-[1.1] tracking-tighter text-white drop-shadow-2xl">
+              特別な思い出を、<br />
+              <span className="text-grad-sunset italic">もっと特別に。</span>
+            </h1>
+            
+            <p className="text-base md:text-xl max-w-2xl mx-auto mb-12 text-white/60 font-medium leading-relaxed tracking-tight px-4">
+              家族の笑顔、ペットの寝顔、旅行の感動。<br className="hidden md:block" />
+              何気ない日常の動画に、<span className="text-white">プロ級の魔法</span>を吹き込みます。
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-5 justify-center items-center">
+              <Link 
+                href="/request/new" 
+                className="w-full sm:w-auto btn-primary flex items-center justify-center gap-3 group px-12 py-6 text-lg font-black rounded-2xl shadow-glow-primary hover:scale-[1.02] active:scale-[0.98] transition-all"
+              >
+                動画編集を依頼する
+                <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <Link 
+                href="/market" 
+                className="w-full sm:w-auto flex items-center justify-center gap-3 px-12 py-6 text-lg font-black rounded-2xl bg-white/5 border border-white/10 text-white hover:bg-white/10 backdrop-blur-md transition-all group"
+              >
+                <Play size={22} className="text-secondary group-hover:scale-110 transition-transform" fill="currentColor" />
+                編集して夢を叶える
+              </Link>
+            </div>
+
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1 }}
+              className="mt-12 flex flex-col items-center gap-2"
             >
-              <Play size={20} className="text-secondary" />
-              編集して夢を叶える
-            </Link>
+              <span className="text-[10px] font-bold text-white/20 uppercase tracking-widest">Already have an account?</span>
+              <Link 
+                href="/login" 
+                className="text-xs font-black text-white hover:text-primary-light transition-colors border-b border-white/10 hover:border-primary-light pb-0.5"
+              >
+                こちらからログイン
+              </Link>
+            </motion.div>
           </div>
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-            className="mt-8 text-sm font-bold text-white/40"
-          >
-            登録済みの方は <Link href="/login" className="text-white hover:text-primary underline underline-offset-4 decoration-white/20 hover:decoration-primary transition-all">こちらからログイン</Link>
-          </motion.div>
         </motion.div>
+
+        {/* 下部へのスクロールを促す演出 */}
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-3 opacity-30 animate-bounce">
+           <div className="w-px h-12 bg-gradient-to-b from-transparent via-white to-transparent" />
+        </div>
       </section>
 
       {/* Concept Section */}
