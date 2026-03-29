@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       {/* ===== Hero: 写真 + キャッチコピーだけ ===== */}
-      <section className="relative min-h-[60vh] md:min-h-[70vh] flex items-center justify-center overflow-hidden pt-16">
+      <section className="relative min-h-[70vh] md:min-h-screen flex items-center justify-center overflow-hidden pt-16">
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/hero_light.png"
@@ -95,7 +95,7 @@ export default function Home() {
       </section>
 
       {/* Concept Section */}
-      <section id="concept" className="py-24 relative overflow-hidden">
+      <section id="concept" className="py-24 relative overflow-hidden bg-secondary/[0.04] border-y border-secondary/10">
         <div className="absolute top-0 right-0 w-64 h-64 bg-secondary/10 blur-[100px] rounded-full" />
         <div className="section-container text-center relative z-10">
           <h2 className="text-3xl md:text-5xl mb-4 font-extrabold tracking-tight">なぜ、Dreamer&apos;s Cut なのか</h2>
@@ -154,7 +154,7 @@ export default function Home() {
       </section>
 
       {/* Promotion Slider (High Achievers) */}
-      <section className="py-24 relative overflow-hidden bg-white/5">
+      <section className="py-24 relative overflow-hidden bg-gradient-to-b from-primary/[0.05] to-background">
         <div className="absolute left-0 bottom-0 w-96 h-96 bg-primary/20 blur-[120px] rounded-full" />
         <div className="section-container relative z-10">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
@@ -177,26 +177,26 @@ export default function Home() {
                { name: "ユキ", jobs: 310, msg: "家族の記念日動画ならお任せください。将来は映画監督を目指して勉強中です！", link: "https://youtube.com" },
                { name: "ケンタ", jobs: 105, msg: "スポーツイベントのダイジェスト編集をしています。自営業の宣伝も兼ねてます！", link: "https://kenta-edit.com" }
              ].map((p, idx) => (
-                <div key={idx} className="min-w-[320px] md:min-w-[420px] glass-card p-8 rounded-3xl snap-center relative overflow-hidden">
+                <div key={idx} className="min-w-[320px] md:min-w-[420px] glass-card p-8 rounded-3xl snap-center relative overflow-hidden border border-primary/5">
                    <div className="absolute top-0 right-0 p-4 opacity-10">
                      <Star size={80} fill="currentColor" className="text-secondary" />
                    </div>
                    <div className="flex items-center gap-4 mb-6 relative z-10">
-                      <div className="w-16 h-16 rounded-full bg-grad-sunset flex items-center justify-center text-white text-2xl font-bold border-4 border-background shadow-lg shadow-primary/30">
+                      <div className="w-16 h-16 rounded-full bg-grad-sunset flex items-center justify-center text-white text-2xl font-bold border-4 border-white shadow-lg shadow-primary/20">
                         {p.name.charAt(0)}
                       </div>
                       <div>
-                         <div className="text-xl font-bold">{p.name} 様</div>
+                         <div className="text-xl font-bold text-foreground">{p.name} 様</div>
                          <div className="text-sm text-secondary font-bold flex items-center gap-1 mt-1">
                             <Star size={14} fill="currentColor" />
                             実績 {p.jobs} 件達成
                          </div>
                       </div>
                    </div>
-                   <p className="text-base leading-relaxed text-foreground/80 mb-8 min-h-[4rem] relative z-10 italic">
+                   <p className="text-base leading-relaxed text-foreground/80 mb-8 min-h-[4rem] relative z-10 italic font-medium">
                       「{p.msg}」
                    </p>
-                   <a href={p.link} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center w-full gap-2 text-sm font-bold bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl transition-colors relative z-10">
+                   <a href={p.link} target="_blank" rel="noreferrer" className="flex items-center justify-center w-full gap-2 text-sm font-black bg-black/5 hover:bg-black/10 text-foreground px-6 py-4 rounded-xl transition-colors relative z-10 border border-black/5 whitespace-nowrap">
                       <ExternalLink size={16} />
                       公式サイト / SNS を見る
                    </a>
@@ -218,8 +218,8 @@ export default function Home() {
                   <Clock size={18} />
                   <span>シンプル料金体系</span>
                 </div>
-                <h2 className="text-4xl md:text-5xl mb-8 font-extrabold tracking-tight leading-tight">明朗会計だから、<br />お互いに気持ちいい。</h2>
-                <p className="text-white/70 mb-8 text-lg leading-relaxed">
+                <h2 className="text-4xl md:text-5xl mb-8 font-extrabold tracking-tight leading-tight text-foreground">明朗会計だから、<br />お互いに気持ちいい。</h2>
+                <p className="text-foreground/60 mb-8 text-lg leading-relaxed font-bold">
                   依頼者様は手軽に注文でき、制作者様はしっかりと報酬を得られる。
                   夢を応援するための透明な仕組みを実現しました。「ノークレーム」を大前提とし、温かい気持ちで取引が行われます。
                 </p>
@@ -233,8 +233,8 @@ export default function Home() {
                  <div className="p-6 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-md hover:bg-white/10 transition-colors">
                     <div className="text-sm font-bold text-accent mb-2 tracking-wider">依頼者様 支払</div>
                     <div className="text-3xl font-black mb-1">¥2,000</div>
-                    <div className="text-xs text-white/50 mb-4 pb-4 border-b border-white/10">1分以内の動画編集</div>
-                    <ul className="text-sm space-y-2 text-white/80">
+                    <div className="text-xs text-foreground/40 mb-4 pb-4 border-b border-black/5">1分以内の動画編集</div>
+                    <ul className="text-sm space-y-2 text-foreground/70 font-semibold">
                       <li>✓ 基本テロップ入れ</li>
                       <li>✓ BGM・効果音</li>
                       <li>✓ 10秒毎の詳細要望可</li>
@@ -244,8 +244,8 @@ export default function Home() {
                     <div className="absolute top-0 right-0 p-2 opacity-50"><Star size={24} className="text-primary"/></div>
                     <div className="text-sm font-bold text-primary mb-2 tracking-wider">制作者様 受取</div>
                     <div className="text-3xl font-black mb-1">¥1,000</div>
-                    <div className="text-xs text-white/50 mb-4 pb-4 border-b border-white/10">1件あたりの報酬</div>
-                    <ul className="text-sm space-y-2 text-white/80">
+                    <div className="text-xs text-foreground/40 mb-4 pb-4 border-b border-black/5">1件あたりの報酬</div>
+                    <ul className="text-sm space-y-2 text-foreground/70 font-semibold">
                       <li>✓ 学習動画でサポート</li>
                       <li>✓ サイト内チャット完結</li>
                       <li>✓ 未払い防止の仮払い</li>
@@ -254,8 +254,8 @@ export default function Home() {
                  <div className="p-6 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-md hover:bg-white/10 transition-colors">
                     <div className="text-sm font-bold text-accent mb-2 tracking-wider">依頼者様 支払</div>
                     <div className="text-3xl font-black mb-1">¥3,000</div>
-                    <div className="text-xs text-white/50 mb-4 pb-4 border-b border-white/10">2分以内の動画編集</div>
-                    <ul className="text-sm space-y-2 text-white/80">
+                    <div className="text-xs text-foreground/40 mb-4 pb-4 border-b border-black/5">2分以内の動画編集</div>
+                    <ul className="text-sm space-y-2 text-foreground/70 font-semibold">
                       <li>✓ 基本テロップ入れ</li>
                       <li>✓ BGM・効果音</li>
                       <li>✓ 10秒毎の詳細要望可</li>
@@ -265,8 +265,8 @@ export default function Home() {
                     <div className="absolute top-0 right-0 p-2 opacity-50"><Star size={24} className="text-primary"/></div>
                     <div className="text-sm font-bold text-primary mb-2 tracking-wider">制作者様 受取</div>
                     <div className="text-3xl font-black mb-1">¥2,000</div>
-                    <div className="text-xs text-white/50 mb-4 pb-4 border-b border-white/10">1件あたりの報酬</div>
-                    <ul className="text-sm space-y-2 text-white/80">
+                    <div className="text-xs text-foreground/40 mb-4 pb-4 border-b border-black/5">1件あたりの報酬</div>
+                    <ul className="text-sm space-y-2 text-foreground/70 font-semibold">
                       <li>✓ 学習動画でサポート</li>
                       <li>✓ サイト内チャット完結</li>
                       <li>✓ 未払い防止の仮払い</li>
@@ -275,7 +275,7 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="text-center mt-10 p-4 bg-white/5 rounded-xl border border-white/10 backdrop-blur-md relative z-10 text-sm text-white/60">
+            <div className="text-center mt-10 p-4 bg-black/5 rounded-xl border border-black/5 backdrop-blur-md relative z-10 text-sm text-foreground/40 font-bold">
               ※ 差額の1,000円はプラットフォーム維持費および、システムを円滑に運営するための「夢追い人の応援費」に充てられます。
             </div>
           </div>
@@ -286,10 +286,10 @@ export default function Home() {
       <footer className="py-12 border-t border-glass-border bg-background relative z-10">
         <div className="section-container flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-grad-sunset flex items-center justify-center text-white shadow-lg shadow-primary/30">
+            <div className="w-10 h-10 rounded-xl bg-grad-sunset flex items-center justify-center text-white shadow-lg shadow-primary/20">
               <Sparkles size={20} />
             </div>
-            <span className="font-extrabold text-2xl tracking-tight text-white">
+            <span className="font-extrabold text-2xl tracking-tight text-foreground">
               Dreamer&apos;s Cut
             </span>
           </div>
