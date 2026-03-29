@@ -185,15 +185,16 @@ export function JobProvider({ children }: { children: React.ReactNode }) {
     if (refreshedData) {
       setJobs(refreshedData.map(mapJobData));
       
+      // 依頼主に通知（非同期で行い、画面反映を優先する）
       const acceptedJob = refreshedData.find(j => j.id === jobId);
       if (acceptedJob) {
-        await addNotification(
+        addNotification(
           acceptedJob.requestor_id,
           'job_accepted',
           '依頼が引き受けられました',
           `「${acceptedJob.title}」がクリエイターに承諾されました。`,
           `/project/${jobId}`
-        );
+        ).catch(err => console.error("Notification failed but job accepted:", err));
       }
     }
   };

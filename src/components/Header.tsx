@@ -125,19 +125,22 @@ export default function Header() {
                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
                          animate={{ opacity: 1, y: 0, scale: 1 }}
                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                         className="absolute top-full right-0 mt-4 w-[340px] glass-card border border-white/10 rounded-3xl shadow-2xl z-50 overflow-hidden"
+                         className="fixed xs:absolute top-[70px] xs:top-full right-4 xs:right-0 mt-2 xs:mt-4 w-[calc(100vw-32px)] xs:w-[360px] glass-card border border-white/10 rounded-[2rem] shadow-2xl z-[100] overflow-hidden"
                        >
-                         <div className="p-4 border-b border-white/5 flex items-center justify-between bg-white/5">
-                           <h3 className="text-xs font-black uppercase tracking-widest text-white/70">お知らせ</h3>
+                         <div className="p-5 border-b border-white/10 flex items-center justify-between bg-white/5 backdrop-blur-xl">
+                           <div className="flex items-center gap-2">
+                             <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                             <h3 className="text-[10px] font-black uppercase tracking-widest text-white/50">通知センター</h3>
+                           </div>
                            <button 
                             onClick={() => markAllAsRead()}
-                            className="text-[10px] font-bold text-primary hover:underline"
+                            className="text-[10px] font-black text-primary-light hover:text-white transition-colors"
                            >
                              すべて既読にする
                            </button>
                          </div>
                          
-                         <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
+                         <div className="max-h-[min(450px,70vh)] overflow-y-auto custom-scrollbar bg-black/20">
                            {notifications.length > 0 ? (
                              notifications.map((n) => (
                                <button 
@@ -147,31 +150,43 @@ export default function Header() {
                                    if (n.link) router.push(n.link);
                                    setIsNotificationsOpen(false);
                                  }}
-                                 className={`w-full p-4 flex gap-4 text-left hover:bg-white/5 transition-colors border-b border-white/5 last:border-0 ${!n.is_read ? 'bg-primary/5' : ''}`}
+                                 className={`w-full p-5 flex gap-4 text-left hover:bg-white/10 transition-all border-b border-white/5 last:border-0 relative group ${!n.is_read ? 'bg-primary/5' : ''}`}
                                >
-                                 <div className={`mt-1 w-2 h-2 rounded-full shrink-0 ${!n.is_read ? 'bg-primary shadow-glow' : 'bg-transparent'}`} />
-                                 <div className="space-y-1">
-                                   <div className={`text-xs font-bold ${!n.is_read ? 'text-white' : 'text-white/60'}`}>{n.title}</div>
-                                   <div className="text-[11px] text-white/40 leading-relaxed">{n.content}</div>
-                                   <div className="text-[9px] text-white/20 font-bold">{new Date(n.created_at).toLocaleString()}</div>
+                                 <div className={`mt-1 w-11 h-11 rounded-2xl shrink-0 flex items-center justify-center transition-transform group-active:scale-90 ${
+                                   n.type === 'new_message' ? 'bg-blue-500/20 text-blue-400' :
+                                   n.type === 'job_accepted' ? 'bg-emerald-500/20 text-emerald-400' :
+                                   'bg-primary/20 text-primary-light'
+                                 }`}>
+                                   {n.type === 'new_message' ? <Sparkles size={22} /> : <Bell size={22} />}
                                  </div>
+                                 <div className="flex-1 space-y-1">
+                                   <div className={`text-xs font-black flex items-center gap-2 ${!n.is_read ? 'text-white' : 'text-white/40'}`}>
+                                      {n.type === 'new_message' && <span className="px-1.5 py-0.5 rounded-md bg-blue-500/20 text-[8px] text-blue-400 uppercase tracking-tighter">MESSAGE</span>}
+                                      {n.title}
+                                   </div>
+                                   <div className={`text-[11px] leading-relaxed ${!n.is_read ? 'text-white/70' : 'text-white/30'}`}>{n.content}</div>
+                                   <div className="text-[9px] text-white/20 font-bold">{new Date(n.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                                 </div>
+                                 {!n.is_read && <div className="absolute top-1/2 right-4 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary shadow-glow-primary" />}
                                </button>
                              ))
                            ) : (
-                             <div className="p-10 text-center space-y-3">
-                               <Bell size={32} className="mx-auto text-white/5" />
-                               <p className="text-xs text-white/20 font-bold">通知はまだありません</p>
+                             <div className="p-16 text-center space-y-4">
+                               <div className="w-16 h-16 rounded-3xl bg-white/5 mx-auto flex items-center justify-center">
+                                 <Bell size={32} className="text-white/10" />
+                               </div>
+                               <p className="text-xs text-white/20 font-bold tracking-tight">新しい通知はありません</p>
                              </div>
                            )}
                          </div>
                          
-                         <div className="p-3 bg-white/5 text-center">
+                         <div className="p-4 bg-white/5 text-center border-t border-white/5">
                             <Link 
                               href="/dashboard" 
                               onClick={() => setIsNotificationsOpen(false)}
-                              className="text-[10px] font-black text-white/30 hover:text-white transition-colors"
+                              className="text-[10px] font-black text-white/20 hover:text-white transition-colors tracking-widest uppercase"
                             >
-                              すべて表示
+                              View all history
                             </Link>
                          </div>
                        </motion.div>
