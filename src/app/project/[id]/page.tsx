@@ -85,19 +85,19 @@ export default function ProjectRoomPage() {
 
   return (
     <ClientOnly>
-      <main className="h-screen pt-20 pb-4 bg-background flex flex-col overflow-hidden relative">
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-radial from-primary/5 to-transparent pointer-events-none opacity-50" />
+      <main className="min-h-screen pt-24 pb-12 bg-background flex flex-col relative">
+        <div className="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-primary/10 to-transparent pointer-events-none opacity-50" />
 
-        <div className="flex-1 section-container py-4 flex flex-col sm:flex-row gap-6 h-full overflow-hidden relative z-10">
+        <div className="section-container flex flex-col lg:flex-row gap-8 lg:h-[calc(100vh-140px)] relative z-10 transition-all">
           
           {/* Sidebar: Details */}
-          <div className="w-full sm:w-80 flex flex-col gap-4 h-auto sm:h-full">
+          <div className="w-full lg:w-96 flex flex-col gap-4 lg:h-full overflow-y-auto no-scrollbar lg:pr-2">
             <Link href="/dashboard" className="inline-flex items-center gap-2 text-white/50 hover:text-white mb-2 font-bold transition-colors">
               <ArrowLeft size={18} />
               戻る
             </Link>
 
-            <div className="glass-card p-6 rounded-[32px] overflow-y-auto no-scrollbar shadow-2xl relative">
+            <div className="glass-card p-6 sm:p-8 rounded-[32px] shadow-2xl relative">
               <div className="flex items-center gap-2 mb-6 px-2">
                  <div className={`w-3 h-3 rounded-full animate-pulse ${job.status === 'completed' ? 'bg-success' : 'bg-primary'}`} />
                  <span className="text-xs font-black uppercase tracking-widest text-white/60">
@@ -108,69 +108,71 @@ export default function ProjectRoomPage() {
                  </span>
               </div>
 
-              <h2 className="text-xl font-black mb-6 text-white leading-tight">{job.title}</h2>
+              <h2 className="text-2xl font-black mb-6 text-white leading-tight tracking-tight">{job.title}</h2>
               
               <div className="space-y-6">
-                <div className="p-4 bg-white/5 rounded-2xl border border-white/10 shadow-inner">
-                  <div className="text-[10px] font-bold text-white/40 mb-2 uppercase tracking-tighter">案件詳細</div>
-                  <div className="flex flex-col gap-3">
-                     <div className="flex items-center gap-2 text-sm font-bold text-white/80">
-                        <User size={14} className="text-primary"/> {isRequestor ? `制作者: ${job.providerName || "未定"}` : `依頼者: ${job.requestorName}`}
+                <div className="p-5 bg-white/5 rounded-2xl border border-white/10 shadow-inner">
+                  <div className="text-[10px] font-bold text-white/40 mb-3 uppercase tracking-tighter">案件詳細</div>
+                  <div className="flex flex-col gap-4">
+                     <div className="flex items-center gap-3 text-sm font-bold text-white/80">
+                        <div className="p-2 bg-primary/10 rounded-lg"><User size={16} className="text-primary"/></div>
+                        {isRequestor ? `制作者: ${job.providerName || "未定"}` : `依頼主: ${job.requestorName}`}
                      </div>
-                     <div className="flex items-center gap-2 text-sm font-bold text-white/80">
-                        <Clock size={14} className="text-secondary"/> {job.duration/60}分以内 / ¥{job.reward.toLocaleString()}
+                     <div className="flex items-center gap-3 text-sm font-bold text-white/80">
+                        <div className="p-2 bg-secondary/10 rounded-lg"><Clock size={16} className="text-secondary"/></div>
+                        {job.duration/60}分以内 / ¥{job.reward.toLocaleString()}
                      </div>
                   </div>
                 </div>
 
-                <div className="p-4 bg-white/5 rounded-2xl border border-white/10 shadow-inner">
-                  <div className="text-[10px] font-bold text-white/40 mb-2 uppercase tracking-tighter">プロジェクト進行</div>
+                <div className="p-5 bg-white/5 rounded-2xl border border-white/10 shadow-inner">
+                  <div className="text-[10px] font-bold text-white/40 mb-3 uppercase tracking-tighter">プロジェクト進行</div>
                   <div className="space-y-4 pt-2">
                     {/* Status Actions */}
                     {job.status === "ongoing" && !isRequestor && (
-                      <button onClick={() => handleStatusChange("delivered")} className="btn-primary w-full py-4 text-sm font-black flex items-center justify-center gap-2 glow-effect shadow-primary/20">
-                         <CheckCircle size={18}/> 納品する
+                      <button onClick={() => handleStatusChange("delivered")} className="btn-primary w-full py-5 text-sm font-black flex items-center justify-center gap-2 glow-effect shadow-primary/20">
+                         <CheckCircle size={18}/> 納品データを送る
                       </button>
                     )}
                     {job.status === "delivered" && isRequestor && (
-                      <div className="space-y-3">
-                        <button onClick={() => handleStatusChange("completed")} className="w-full py-4 bg-success text-white rounded-2xl text-sm font-black shadow-lg shadow-success/20 hover:scale-[1.02] transition-transform">
-                          完了を確認してお支払い
+                      <div className="space-y-4">
+                        <button onClick={() => handleStatusChange("completed")} className="w-full py-5 bg-success text-white rounded-2xl text-sm font-black shadow-lg shadow-success/20 hover:scale-[1.02] transition-transform flex items-center justify-center gap-2">
+                          <CheckCircle size={18}/> 完了を承認（支払い）
                         </button>
-                        <button onClick={() => handleStatusChange("ongoing")} className="w-full py-4 bg-white/10 text-white rounded-2xl text-xs font-bold hover:bg-white/20 transition-colors">
-                          修正を依頼する
+                        <button onClick={() => handleStatusChange("ongoing")} className="w-full py-4 bg-white/10 text-white rounded-2xl text-xs font-bold hover:bg-white/20 transition-colors uppercase tracking-widest">
+                          修正をリクエスト
                         </button>
                       </div>
                     )}
                     {(job.status === "ongoing" || job.status === "delivered") && (
-                       <button onClick={() => handleStatusChange("cancelled")} className="w-full py-3 bg-error/10 text-error/80 rounded-xl text-[10px] font-black hover:bg-error/20 transition-colors uppercase tracking-widest border border-error/20 mt-4">
-                          問題あり（白紙撤回要求）
+                       <button onClick={() => handleStatusChange("cancelled")} className="w-full py-4 bg-error/10 text-error/80 rounded-xl text-[10px] font-black hover:bg-error/20 transition-colors uppercase tracking-widest border border-error/20 mt-6">
+                          問題あり（中断申請）
                        </button>
                     )}
                     {job.status === "completed" && (
-                       <div className="p-4 bg-success/10 border border-success/30 rounded-2xl animate-in zoom-in">
-                          <div className="flex items-center gap-2 text-success font-black text-sm mb-1">
-                             <Sparkles size={16}/> おめでとうございます！
+                       <div className="p-6 bg-success/10 border border-success/30 rounded-3xl animate-in zoom-in">
+                          <div className="flex items-center gap-2 text-success font-black text-sm mb-2">
+                             <Sparkles size={18}/> おめでとうございます！
                           </div>
-                          <p className="text-[10px] text-white/60 font-bold leading-relaxed">このプロジェクトは正常に完了し、報酬のお支払いが確定しました。</p>
+                          <p className="text-xs text-white/60 font-bold leading-relaxed">このプロジェクトは正常に完了し、報酬のお支払いが確定しました。</p>
                        </div>
                     )}
                   </div>
                 </div>
               </div>
               
-              <div className="mt-8 flex items-center gap-2 text-[10px] text-white/30 font-bold px-2">
-                 <Info size={14}/>
+              <div className="mt-8 flex items-center gap-3 text-[10px] text-white/30 font-bold px-2 bg-white/5 p-3 rounded-xl border border-white/5">
+                 <Info size={16}/>
                  公序良俗に反するやり取りは禁止です。
               </div>
             </div>
           </div>
 
           {/* Main: Chat Area */}
-          <div className="flex-1 flex flex-col bg-white/5 rounded-[40px] border border-white/10 shadow-2xl relative overflow-hidden backdrop-blur-md">
+          <div className="flex-1 flex flex-col bg-white/5 rounded-[40px] border border-white/10 shadow-2xl relative overflow-hidden backdrop-blur-md min-h-[500px] lg:h-full">
             
             {/* Chat Header */}
-            <div className="p-6 border-b border-white/10 flex items-center justify-between bg-white/5 relative z-20">
+            <div className="p-6 sm:p-8 border-b border-white/10 flex items-center justify-between bg-white/5 relative z-20">
                <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-full bg-grad-sunset flex items-center justify-center text-white shadow-lg float-animation">
                      <MessageSquare size={20} />
