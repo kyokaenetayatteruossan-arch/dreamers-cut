@@ -50,9 +50,9 @@ export default function ProjectRoomPage() {
     const file = e.target.files?.[0];
     if (!file || !user || !job) return;
 
-    // 50MB制限 (簡易)
-    if (file.size > 50 * 1024 * 1024) {
-      alert("ファイルサイズが大きすぎます（上限50MB）。");
+    // 500MB制限 (将来的にはProプランで対応可能)
+    if (file.size > 500 * 1024 * 1024) {
+      alert("ファイルサイズが大きすぎます（上限500MB）。");
       return;
     }
 
