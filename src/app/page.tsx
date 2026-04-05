@@ -23,22 +23,22 @@ export default function Home() {
         </div>
 
         <div className="section-container relative z-10 h-full flex flex-col justify-center">
-          {/* Main Copy: 分割して配置 */}
-          <div className="relative w-full max-w-6xl mx-auto h-[50vh] flex flex-col justify-between">
+          {/* Main Copy: パーツごとに極大化して配置 */}
+          <div className="relative w-full max-w-[90vw] mx-auto h-[60vh] flex flex-col justify-between items-start">
             <motion.h1 
-              initial={{ opacity: 0, x: -50 }}
+              initial={{ opacity: 0, x: -100 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 1.2, ease: "easeOut" }}
-              className="text-4xl sm:text-6xl md:text-8xl font-black tracking-tighter text-foreground drop-shadow-2xl self-start"
+              className="text-[10vw] md:text-[9rem] font-black tracking-tighter text-foreground drop-shadow-[0_10px_30px_rgba(0,0,0,0.3)] leading-none select-none"
             >
               特別な思い出を、
             </motion.h1>
             
             <motion.h1 
-              initial={{ opacity: 0, x: 50 }}
+              initial={{ opacity: 0, x: 100 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1.2, delay: 0.3, ease: "easeOut" }}
-              className="text-5xl sm:text-8xl md:text-[11rem] font-black tracking-tighter text-foreground drop-shadow-2xl self-end text-right"
+              transition={{ duration: 1.4, delay: 0.3, ease: "easeOut" }}
+              className="text-[14vw] md:text-[15rem] font-black tracking-tighter text-foreground drop-shadow-[0_15px_50px_rgba(0,0,0,0.4)] self-end text-right leading-[0.8] select-none"
             >
               <span className="text-gradient italic">もっと特別に！！</span>
             </motion.h1>
