@@ -39,7 +39,7 @@ export default function Home() {
               }}
               className="font-black tracking-tighter text-foreground whitespace-nowrap select-none text-left"
             >
-              特別な思い出を、
+              「特別な思い出」を、
             </h1>
           </motion.div>
 
@@ -58,7 +58,7 @@ export default function Home() {
               }}
               className="font-black tracking-tighter text-foreground text-right italic select-none"
             >
-              <span className="text-gradient block">もっと特別に！！</span>
+              <span className="text-gradient block">“もっと特別”に！</span>
             </h1>
           </motion.div>
         </div>
