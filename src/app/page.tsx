@@ -15,37 +15,53 @@ export default function Home() {
             src="/images/hero_light.png"
             alt="Family Memories Cinematic"
             fill
-            className="object-cover brightness-105 object-center scale-105"
+            className="object-cover brightness-110 object-center scale-105"
             priority
           />
-          {/* 視認性確保のための薄いオーバーレイ */}
-          <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/5" />
+          {/* テキストを読みやすくするための微妙なグラデーション */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-white/10" />
         </div>
 
-        <div className="section-container relative z-10 h-full flex flex-col justify-center">
-          {/* Main Copy: パーツごとに極大化して配置 */}
-          <div className="relative w-full max-w-[90vw] mx-auto h-[60vh] flex flex-col justify-between items-start">
-            <motion.h1 
-              initial={{ opacity: 0, x: -100 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1.2, ease: "easeOut" }}
-              className="text-[10vw] md:text-[9rem] font-black tracking-tighter text-foreground drop-shadow-[0_10px_30px_rgba(0,0,0,0.3)] leading-none select-none"
+        {/* コロッサルテキストレイアウト: 画面全体をキャンバスに使用 */}
+        <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden h-full flex flex-col justify-center gap-16 px-6 md:block">
+          {/* 左上パーツ / モバイルでは上部 */}
+          <motion.div
+            initial={{ opacity: 0, x: -150, y: -50 }}
+            animate={{ opacity: 1, x: 0, y: 0 }}
+            transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+            className="relative md:absolute md:top-[12vh] md:left-[5vw]"
+          >
+            <h1 
+              style={{ 
+                fontSize: 'clamp(3rem, 10vw, 11rem)', 
+                lineHeight: '0.9',
+                textShadow: '0 20px 40px rgba(0,0,0,0.15)'
+              }}
+              className="font-black tracking-tighter text-foreground whitespace-nowrap select-none text-left"
             >
               特別な思い出を、
-            </motion.h1>
-            
-            <motion.h1 
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1.4, delay: 0.3, ease: "easeOut" }}
-              className="text-[14vw] md:text-[15rem] font-black tracking-tighter text-foreground drop-shadow-[0_15px_50px_rgba(0,0,0,0.4)] self-end text-right leading-[0.8] select-none"
-            >
-              <span className="text-gradient italic">もっと特別に！！</span>
-            </motion.h1>
-          </div>
-        </div>
+            </h1>
+          </motion.div>
 
-        {/* Scroll Indicator - 削除済み */}
+          {/* 右下パーツ / モバイルでは下部 */}
+          <motion.div
+            initial={{ opacity: 0, x: 150, y: 50 }}
+            animate={{ opacity: 1, x: 0, y: 0 }}
+            transition={{ duration: 1.5, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="relative md:absolute md:bottom-[15vh] md:right-[5vw]"
+          >
+            <h1 
+              style={{ 
+                fontSize: 'clamp(3.5rem, 15vw, 16rem)', 
+                lineHeight: '0.8',
+                textShadow: '0 30px 60px rgba(0,0,0,0.2)'
+              }}
+              className="font-black tracking-tighter text-foreground text-right italic select-none"
+            >
+              <span className="text-gradient block">もっと特別に！！</span>
+            </h1>
+          </motion.div>
+        </div>
       </section>
 
       {/* ===== Action Section: 背景から出したコンテンツ群 ===== */}
