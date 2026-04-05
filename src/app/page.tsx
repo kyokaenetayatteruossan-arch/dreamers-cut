@@ -33,7 +33,7 @@ export default function Home() {
           >
             <h1 
               style={{ 
-                fontSize: 'clamp(3rem, 10vw, 11rem)', 
+                fontSize: 'clamp(2.5rem, 9vw, 10rem)', 
                 lineHeight: '0.9',
                 textShadow: '0 20px 40px rgba(0,0,0,0.15)'
               }}
@@ -52,7 +52,7 @@ export default function Home() {
           >
             <h1 
               style={{ 
-                fontSize: 'clamp(3.5rem, 15vw, 16rem)', 
+                fontSize: 'clamp(3rem, 13vw, 14rem)', 
                 lineHeight: '0.8',
                 textShadow: '0 30px 60px rgba(0,0,0,0.2)'
               }}
