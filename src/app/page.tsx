@@ -66,10 +66,24 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===== Action Section: 背景から出したコンテンツ群 ===== */}
-      <section className="relative py-32 bg-background border-b border-black/5 overflow-hidden">
-        <div className="absolute top-0 left-1/4 w-[400px] h-[400px] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-accent/5 blur-[120px] rounded-full pointer-events-none" />
+      <section className="relative py-24 bg-background border-b border-black/5 overflow-visible">
+        {/* 空色バナー (Sky Blue Banner) - セクター外に配置して端まで届かせる */}
+        <div className="w-full relative mb-16 overflow-visible">
+          <div 
+            style={{ backgroundColor: '#00bfff' }}
+            className="w-full px-4 md:px-14 py-8 md:py-16 border-y-4 border-white/20"
+          >
+            <h2 
+              style={{ color: 'white' }}
+              className="text-[1.8rem] xs:text-[2.2rem] md:text-7xl font-black tracking-tighter leading-none md:leading-tight text-center max-w-7xl mx-auto"
+            >
+              <span className="block md:inline whitespace-nowrap drop-shadow-md">何気ない動画が</span>
+              <span className="block md:inline md:ml-6 drop-shadow-lg scale-y-110">
+                ”<span className="text-yellow-300">一生モノの思い出</span>”に！
+              </span>
+            </h2>
+          </div>
+        </div>
 
         <div className="section-container relative z-10">
           <motion.div
@@ -79,23 +93,6 @@ export default function Home() {
             transition={{ duration: 0.8 }}
             className="w-full text-center"
           >
-            {/* 空色バナー (Sky Blue Banner) - 端まで広げ、行間を極限まで詰める */}
-            <div className="relative mb-20 w-full overflow-hidden">
-              <div 
-                style={{ backgroundColor: '#00bfff', boxShadow: '0 20px 40px -10px rgba(0, 191, 255, 0.3)' }}
-                className="relative px-4 md:px-14 py-8 md:py-16 md:rounded-[3rem] border-y-4 md:border-4 border-white/20"
-              >
-                <h2 
-                  style={{ color: 'white' }}
-                  className="text-[1.8rem] xs:text-[2.2rem] md:text-7xl font-black tracking-tighter leading-none md:leading-tight text-center"
-                >
-                  <span className="block md:inline whitespace-nowrap drop-shadow-md">何気ない動画が</span>
-                  <span className="block md:inline md:ml-6 drop-shadow-lg scale-y-110">
-                    ”一生モノの思い出”に！
-                  </span>
-                </h2>
-              </div>
-            </div>
 
             {/* メインアクションボタン */}
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-14">
