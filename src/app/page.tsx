@@ -8,18 +8,18 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       {/* ===== Hero: 写真 + キャッチコピーだけ ===== */}
-      <section className="relative h-screen min-h-[700px] flex items-center justify-center overflow-hidden">
+      <section className="relative h-screen min-h-screen flex items-center justify-center overflow-hidden">
         {/* Background Image & Overlays */}
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/hero_light.png"
             alt="Family Memories Cinematic"
             fill
-            className="object-cover brightness-105 object-[center_25%] scale-105"
+            className="object-cover brightness-105 object-center scale-105"
             priority
           />
           {/* 視認性確保のための薄いオーバーレイ */}
-          <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-white/10" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/5" />
         </div>
 
         <div className="section-container relative z-10 flex flex-col items-center justify-center">
