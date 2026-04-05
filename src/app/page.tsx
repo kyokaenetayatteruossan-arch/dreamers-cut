@@ -79,12 +79,12 @@ export default function Home() {
             transition={{ duration: 0.8 }}
             className="max-w-4xl mx-auto text-center"
           >
-            {/* 帯を廃止したタイポグラフィメッセージ */}
-            <div className="mb-20 text-center">
-              <h2 className="text-3xl md:text-6xl font-black tracking-tight leading-[1.1] md:leading-normal">
+            {/* さらに大きくしたタイポグラフィメッセージ */}
+            <div className="mb-24 text-center">
+              <h2 className="text-4xl xs:text-5xl md:text-8xl font-black tracking-tighter leading-[1.1] md:leading-[1.05]">
                 <span className="block md:inline text-foreground/90">何気ない動画が</span>
                 <span className="md:hidden"><br /></span>
-                <span className="text-gradient block md:inline md:ml-4">
+                <span className="text-gradient block md:inline md:ml-6">
                   ”一生モノの思い出”に！
                 </span>
               </h2>
