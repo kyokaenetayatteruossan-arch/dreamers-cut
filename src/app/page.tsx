@@ -22,30 +22,30 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/5" />
         </div>
 
-        <div className="section-container relative z-10 flex flex-col items-center justify-center">
-          {/* Main Copy ONLY on the photo */}
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            className="text-center"
-          >
-            <h1 className="text-5xl sm:text-7xl md:text-[9.5rem] font-black leading-[1] tracking-tighter text-foreground drop-shadow-2xl">
-              特別な思い出を、<br />
-              <span className="text-gradient italic">もっと特別に。</span>
-            </h1>
-          </motion.div>
+        <div className="section-container relative z-10 h-full flex flex-col justify-center">
+          {/* Main Copy: 分割して配置 */}
+          <div className="relative w-full max-w-6xl mx-auto h-[50vh] flex flex-col justify-between">
+            <motion.h1 
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1.2, ease: "easeOut" }}
+              className="text-4xl sm:text-6xl md:text-8xl font-black tracking-tighter text-foreground drop-shadow-2xl self-start"
+            >
+              特別な思い出を、
+            </motion.h1>
+            
+            <motion.h1 
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1.2, delay: 0.3, ease: "easeOut" }}
+              className="text-5xl sm:text-8xl md:text-[11rem] font-black tracking-tighter text-foreground drop-shadow-2xl self-end text-right"
+            >
+              <span className="text-gradient italic">もっと特別に！！</span>
+            </motion.h1>
+          </div>
         </div>
 
-        {/* Scroll Indicator */}
-        <motion.div 
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="absolute bottom-12 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-3"
-        >
-          <span className="text-[10px] font-black opacity-30 uppercase tracking-widest">Scroll Down</span>
-          <div className="w-[1px] h-14 bg-gradient-to-b from-foreground/50 to-transparent" />
-        </motion.div>
+        {/* Scroll Indicator - 削除済み */}
       </section>
 
       {/* ===== Action Section: 背景から出したコンテンツ群 ===== */}
