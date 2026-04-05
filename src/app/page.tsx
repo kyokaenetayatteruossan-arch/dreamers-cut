@@ -77,21 +77,20 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="max-w-4xl mx-auto text-center"
+            className="w-full text-center"
           >
-            {/* 水色バナー (Sky Blue Banner) - インラインスタイルで確実に色を出す */}
-            <div className="relative mb-20 w-full max-w-5xl mx-auto px-4">
+            {/* 空色バナー (Sky Blue Banner) - 端まで広げ、行間を極限まで詰める */}
+            <div className="relative mb-20 w-full overflow-hidden">
               <div 
-                style={{ backgroundColor: '#0ea5e9', boxShadow: '0 25px 50px -12px rgba(14, 165, 233, 0.25)' }}
-                className="relative px-6 md:px-14 py-10 md:py-16 rounded-[2rem] md:rounded-[3rem] border-4 border-white/20"
+                style={{ backgroundColor: '#00bfff', boxShadow: '0 20px 40px -10px rgba(0, 191, 255, 0.3)' }}
+                className="relative px-4 md:px-14 py-8 md:py-16 md:rounded-[3rem] border-y-4 md:border-4 border-white/20"
               >
                 <h2 
                   style={{ color: 'white' }}
-                  className="text-[1.6rem] xs:text-[2rem] md:text-7xl font-black tracking-tighter leading-[0.85] md:leading-tight text-center"
+                  className="text-[1.8rem] xs:text-[2.2rem] md:text-7xl font-black tracking-tighter leading-none md:leading-tight text-center"
                 >
                   <span className="block md:inline whitespace-nowrap drop-shadow-md">何気ない動画が</span>
-                  <span className="md:hidden mt-1"><br /></span>
-                  <span className="block md:inline md:ml-6 mt-1 md:mt-0 drop-shadow-lg scale-y-110">
+                  <span className="block md:inline md:ml-6 drop-shadow-lg scale-y-110">
                     ”一生モノの思い出”に！
                   </span>
                 </h2>
