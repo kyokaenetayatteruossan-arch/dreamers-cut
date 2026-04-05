@@ -66,9 +66,9 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative py-24 bg-background border-b border-black/5 overflow-visible">
+      <section className="relative bg-background border-b border-black/5 overflow-visible">
         {/* 空色バナー (Sky Blue Banner) - セクター外に配置して端まで届かせる */}
-        <div className="w-full relative mb-16 overflow-visible">
+        <div className="w-full relative overflow-visible">
           <div 
             style={{ backgroundColor: '#00bfff' }}
             className="w-full px-4 md:px-14 py-8 md:py-16 border-y-4 border-white/20"
@@ -79,7 +79,7 @@ export default function Home() {
             >
               <span className="block md:inline whitespace-nowrap drop-shadow-md">何気ない動画が</span>
               <span className="block md:inline md:ml-6 drop-shadow-lg scale-y-110">
-                ”<span className="text-yellow-300">一生モノの思い出</span>”に！
+                ”<span style={{ color: '#ffff00' }}>一生モノの思い出</span>”に！
               </span>
             </h2>
           </div>
