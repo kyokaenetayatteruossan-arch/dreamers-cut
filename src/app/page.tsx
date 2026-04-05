@@ -23,21 +23,22 @@ export default function Home() {
         </div>
 
         {/* コロッサルテキストレイアウト: 画面全体をキャンバスに使用 */}
-        <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden h-full flex flex-col justify-center gap-16 px-6 md:block">
+        <div className="absolute inset-0 z-10 pointer-events-none h-full flex flex-col justify-center gap-16 px-6 md:block overflow-visible">
           {/* 左上パーツ / モバイルでは上部 */}
           <motion.div
             initial={{ opacity: 0, x: -150, y: -50 }}
             animate={{ opacity: 1, x: 0, y: 0 }}
             transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-            className="relative md:absolute md:top-[12vh] md:left-[5vw]"
+            className="relative md:absolute md:top-[25vh] md:left-[5vw]"
           >
             <h1 
               style={{ 
-                fontSize: 'clamp(2.5rem, 9vw, 10rem)', 
-                lineHeight: '0.9',
-                textShadow: '0 20px 40px rgba(0,0,0,0.15)'
+                fontSize: 'clamp(2rem, 8vw, 10rem)', 
+                lineHeight: '1.6',
+                textShadow: '0 20px 40px rgba(0,0,0,0.15)',
+                paddingTop: '0.6em'
               }}
-              className="font-black tracking-tighter text-foreground whitespace-nowrap select-none text-left"
+              className="font-black tracking-tighter text-foreground whitespace-nowrap select-none text-left w-max"
             >
               「特別な思い出」を、
             </h1>
@@ -52,13 +53,14 @@ export default function Home() {
           >
             <h1 
               style={{ 
-                fontSize: 'clamp(3rem, 13vw, 14rem)', 
-                lineHeight: '0.8',
-                textShadow: '0 30px 60px rgba(0,0,0,0.2)'
+                fontSize: 'clamp(1.5rem, 8vw, 12rem)', 
+                lineHeight: '1.6',
+                textShadow: '0 30px 60px rgba(0,0,0,0.2)',
+                paddingTop: '0.5em'
               }}
-              className="font-black tracking-tighter text-foreground text-right italic select-none"
+              className="font-black tracking-tighter text-foreground text-right italic select-none whitespace-nowrap w-max ml-auto md:ml-0"
             >
-              <span className="text-gradient block">“もっと特別”に！</span>
+              <span className="text-gradient inline whitespace-nowrap">“もっと特別”に！</span>
             </h1>
           </motion.div>
         </div>
