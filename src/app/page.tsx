@@ -79,15 +79,19 @@ export default function Home() {
             transition={{ duration: 0.8 }}
             className="max-w-4xl mx-auto text-center"
           >
-            {/* 水色バナーにおさめたタイポグラフィメッセージ */}
-            <div className="inline-block relative mb-20 group w-full max-w-5xl">
-              <div className="absolute -inset-4 bg-sky-400/20 blur-2xl rounded-[3rem] pointer-events-none" />
-              <div className="relative bg-gradient-to-br from-sky-400 to-sky-600 text-white px-6 md:px-16 py-8 md:py-12 rounded-[2rem] md:rounded-[3rem] shadow-2xl shadow-sky-500/20 overflow-hidden">
-                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/pinstriped-suit.png')] opacity-10" />
-                <h2 className="text-3xl md:text-7xl font-black tracking-tighter leading-[0.95] md:leading-[1.1]">
-                  <span className="block md:inline whitespace-nowrap">何気ない動画が</span>
-                  <span className="md:hidden"><br /></span>
-                  <span className="block md:inline mt-2 md:mt-0 md:ml-6 text-white drop-shadow-lg">
+            {/* 水色バナー (Sky Blue Banner) - インラインスタイルで確実に色を出す */}
+            <div className="relative mb-20 w-full max-w-5xl mx-auto px-4">
+              <div 
+                style={{ backgroundColor: '#0ea5e9', boxShadow: '0 25px 50px -12px rgba(14, 165, 233, 0.25)' }}
+                className="relative px-6 md:px-14 py-10 md:py-16 rounded-[2rem] md:rounded-[3rem] border-4 border-white/20"
+              >
+                <h2 
+                  style={{ color: 'white' }}
+                  className="text-[1.6rem] xs:text-[2rem] md:text-7xl font-black tracking-tighter leading-[0.85] md:leading-tight text-center"
+                >
+                  <span className="block md:inline whitespace-nowrap drop-shadow-md">何気ない動画が</span>
+                  <span className="md:hidden mt-1"><br /></span>
+                  <span className="block md:inline md:ml-6 mt-1 md:mt-0 drop-shadow-lg scale-y-110">
                     ”一生モノの思い出”に！
                   </span>
                 </h2>
