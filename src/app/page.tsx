@@ -79,15 +79,19 @@ export default function Home() {
             transition={{ duration: 0.8 }}
             className="max-w-4xl mx-auto text-center"
           >
-            {/* さらに大きくしたタイポグラフィメッセージ */}
-            <div className="mb-24 text-center">
-              <h2 className="text-4xl xs:text-5xl md:text-8xl font-black tracking-tighter leading-[1.1] md:leading-[1.05]">
-                <span className="block md:inline text-foreground/90">何気ない動画が</span>
-                <span className="md:hidden"><br /></span>
-                <span className="text-gradient block md:inline md:ml-6">
-                  ”一生モノの思い出”に！
-                </span>
-              </h2>
+            {/* 水色バナーにおさめたタイポグラフィメッセージ */}
+            <div className="inline-block relative mb-20 group w-full max-w-5xl">
+              <div className="absolute -inset-4 bg-sky-400/20 blur-2xl rounded-[3rem] pointer-events-none" />
+              <div className="relative bg-gradient-to-br from-sky-400 to-sky-600 text-white px-6 md:px-16 py-8 md:py-12 rounded-[2rem] md:rounded-[3rem] shadow-2xl shadow-sky-500/20 overflow-hidden">
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/pinstriped-suit.png')] opacity-10" />
+                <h2 className="text-3xl md:text-7xl font-black tracking-tighter leading-[0.95] md:leading-[1.1]">
+                  <span className="block md:inline whitespace-nowrap">何気ない動画が</span>
+                  <span className="md:hidden"><br /></span>
+                  <span className="block md:inline mt-2 md:mt-0 md:ml-6 text-white drop-shadow-lg">
+                    ”一生モノの思い出”に！
+                  </span>
+                </h2>
+              </div>
             </div>
 
             {/* メインアクションボタン */}
