@@ -79,10 +79,9 @@ export default function Home() {
             transition={{ duration: 0.8 }}
             className="max-w-4xl mx-auto text-center"
           >
-            {/* 家族の笑顔〜の説明文 */}
-            <p className="text-xl md:text-3xl mb-14 text-foreground/80 font-bold leading-relaxed">
-              家族の笑顔、ペットの寝顔、旅行の感動。<br />
-              何気ない日常の動画に、<span className="text-primary font-black underline decoration-primary/20 decoration-4 underline-offset-8">プロ級の魔法</span>を吹き込みます。
+            {/* シンプルなキャッチコピーへの変更 */}
+            <p className="text-2xl md:text-4xl mb-14 text-foreground/90 font-black leading-tight tracking-tight">
+              何気ない動画が<span className="text-primary underline decoration-primary/20 decoration-4 underline-offset-8">”一生モノの思い出”</span>に！
             </p>
 
             {/* メインアクションボタン */}
