@@ -79,10 +79,20 @@ export default function Home() {
             transition={{ duration: 0.8 }}
             className="max-w-4xl mx-auto text-center"
           >
-            {/* シンプルなキャッチコピーへの変更 */}
-            <p className="text-2xl md:text-4xl mb-14 text-foreground/90 font-black leading-tight tracking-tight">
-              何気ない動画が<span className="text-primary underline decoration-primary/20 decoration-4 underline-offset-8">”一生モノの思い出”</span>に！
-            </p>
+            {/* 更新されたキャッチフレーズ帯 (Banner style) */}
+            <div className="inline-block relative mb-16 group">
+              <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 via-primary/40 to-primary/20 blur-xl opacity-50 group-hover:opacity-100 transition-opacity" />
+              <div className="relative bg-primary text-white px-8 md:px-16 py-8 rounded-3xl shadow-2xl overflow-hidden">
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
+                <h2 className="text-2xl md:text-5xl font-black tracking-tight leading-tight md:leading-normal">
+                  <span className="block md:inline">何気ない動画が</span>
+                  <span className="md:hidden"><br /></span>
+                  <span className="text-white decoration-white/30 decoration-4 underline underline-offset-[12px] md:underline-offset-[16px]">
+                    ”一生モノの思い出”に！
+                  </span>
+                </h2>
+              </div>
+            </div>
 
             {/* メインアクションボタン */}
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-14">
