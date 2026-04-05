@@ -67,7 +67,7 @@ export default function Home() {
       </section>
 
       {/* ===== Action Section: 背景から出したコンテンツ群 ===== */}
-      <section className="relative py-20 bg-background border-b border-black/5 overflow-hidden">
+      <section className="relative py-32 bg-background border-b border-black/5 overflow-hidden">
         <div className="absolute top-0 left-1/4 w-[400px] h-[400px] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
         <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-accent/5 blur-[120px] rounded-full pointer-events-none" />
 
@@ -79,19 +79,15 @@ export default function Home() {
             transition={{ duration: 0.8 }}
             className="max-w-4xl mx-auto text-center"
           >
-            {/* 更新されたキャッチフレーズ帯 (Banner style) */}
-            <div className="inline-block relative mb-16 group">
-              <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 via-primary/40 to-primary/20 blur-xl opacity-50 group-hover:opacity-100 transition-opacity" />
-              <div className="relative bg-primary text-white px-8 md:px-16 py-8 rounded-3xl shadow-2xl overflow-hidden">
-                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
-                <h2 className="text-2xl md:text-5xl font-black tracking-tight leading-tight md:leading-normal">
-                  <span className="block md:inline">何気ない動画が</span>
-                  <span className="md:hidden"><br /></span>
-                  <span className="text-white decoration-white/30 decoration-4 underline underline-offset-[12px] md:underline-offset-[16px]">
-                    ”一生モノの思い出”に！
-                  </span>
-                </h2>
-              </div>
+            {/* 帯を廃止したタイポグラフィメッセージ */}
+            <div className="mb-20 text-center">
+              <h2 className="text-3xl md:text-6xl font-black tracking-tight leading-[1.1] md:leading-normal">
+                <span className="block md:inline text-foreground/90">何気ない動画が</span>
+                <span className="md:hidden"><br /></span>
+                <span className="text-gradient block md:inline md:ml-4">
+                  ”一生モノの思い出”に！
+                </span>
+              </h2>
             </div>
 
             {/* メインアクションボタン */}
