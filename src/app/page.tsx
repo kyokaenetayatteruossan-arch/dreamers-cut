@@ -67,10 +67,32 @@ export default function Home() {
       </section>
 
       <section className="relative bg-background border-b border-black/5 overflow-visible">
-        {/* 白バナー (White Banner) */}
-        <div className="w-full relative overflow-visible shadow-sm">
-          <div className="w-full px-4 md:px-14 py-8 md:py-16 bg-white border-y border-black/5">
-            <h2 className="text-black text-[1.8rem] xs:text-[2.2rem] md:text-7xl font-black tracking-tighter leading-none md:leading-tight text-center max-w-7xl mx-auto">
+        {/* 白バナー (White Banner) - 左右に装飾を追加 */}
+        <div className="w-full relative overflow-hidden shadow-sm">
+          <div className="w-full px-4 md:px-14 py-8 md:py-16 bg-white border-y border-black/5 relative">
+            {/* 背景の装飾ドットパターン (左右) */}
+            <div className="absolute left-0 top-0 h-full w-1/4 opacity-[0.03] pointer-events-none hidden md:block" 
+                 style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
+            <div className="absolute right-0 top-0 h-full w-1/4 opacity-[0.03] pointer-events-none hidden md:block" 
+                 style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
+            
+            {/* 左右にふわふわ浮くアイコン装飾 */}
+            <motion.div 
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute left-[5%] top-1/4 text-primary/10 hidden lg:block"
+            >
+              <Sparkles size={48} />
+            </motion.div>
+            <motion.div 
+              animate={{ y: [0, 10, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+              className="absolute right-[5%] bottom-1/4 text-accent/10 hidden lg:block"
+            >
+              <Heart size={48} />
+            </motion.div>
+
+            <h2 className="text-black text-[1.8rem] xs:text-[2.2rem] md:text-7xl font-black tracking-tighter leading-none md:leading-tight text-center max-w-7xl mx-auto relative z-10">
               <span className="block md:inline whitespace-nowrap">何気ない動画が</span>
               <span className="block md:inline md:ml-6 mt-1 md:mt-0 scale-y-110">
                 ”<span className="text-gradient">一生モノの思い出</span>”に！
