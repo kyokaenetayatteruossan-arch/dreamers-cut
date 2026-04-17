@@ -110,36 +110,53 @@ export default function Home() {
             className="w-full text-center"
           >
 
-            {/* シンプルで大きな角丸ボタン (Simple Large Rounded Buttons) */}
-            <div className="flex flex-col items-center gap-12">
-              <div className="flex flex-col md:flex-row gap-8 justify-center items-stretch w-full max-w-4xl mx-auto px-4">
-                {/* 依頼者向けボタン */}
+            {/* インパクトのある巨大アクションカード (Impact Action Cards) */}
+            <div className="flex flex-col items-center gap-14 mt-8">
+              <div className="flex flex-col md:flex-row gap-10 justify-center items-stretch w-full max-w-5xl mx-auto px-6">
+                
+                {/* 依頼者向けカード: 圧倒的な存在感と安心感 */}
                 <Link 
                   href="/request/new" 
-                  className="flex-1 group bg-primary text-white px-10 py-8 text-2xl font-black rounded-[2.5rem] shadow-xl hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] transition-all flex flex-col items-center justify-center text-center gap-2"
+                  className="flex-1 group relative overflow-hidden bg-primary text-white p-12 min-h-[280px] rounded-[3rem] shadow-[0_30px_60px_-15px_rgba(255,56,124,0.4)] hover:shadow-[0_40px_80px_-15px_rgba(255,56,124,0.6)] hover:-translate-y-2 active:scale-[0.98] transition-all flex flex-col items-center justify-center text-center border-b-[8px] border-black/20"
                 >
-                  <span className="flex items-center gap-3">
-                    動画編集を依頼する <ArrowRight size={28} />
-                  </span>
+                  <div className="absolute top-0 left-0 w-full h-1 bg-white/20" />
+                  <div className="mb-6 bg-white/10 p-5 rounded-3xl group-hover:scale-110 transition-transform">
+                    <Sparkles size={40} className="text-white" />
+                  </div>
+                  <h3 className="text-3xl font-black mb-3">依頼する</h3>
+                  <p className="text-white/80 font-bold mb-6 text-lg">何気ない動画を一生モノに</p>
+                  <div className="flex items-center gap-2 bg-white text-primary px-8 py-3 rounded-2xl font-black text-xl shadow-lg">
+                    編集を依頼する <ArrowRight size={24} />
+                  </div>
                 </Link>
 
-                {/* 編集者向けボタン */}
+                {/* 編集者向けカード: プロフェッショナルな誠実さとワクワク感 */}
                 <Link 
                   href="/market" 
-                  className="flex-1 group bg-white border-4 border-primary/20 text-foreground px-10 py-8 text-2xl font-black rounded-[2.5rem] shadow-xl hover:bg-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all flex flex-col items-center justify-center text-center gap-2"
+                  className="flex-1 group relative overflow-hidden bg-white border-4 border-black border-b-[12px] text-foreground p-12 min-h-[280px] rounded-[3rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] hover:shadow-[0_40px_80px_-15px_rgba(0,0,0,0.2)] hover:-translate-y-2 active:scale-[0.98] transition-all flex flex-col items-center justify-center text-center"
                 >
-                  <span className="flex items-center gap-3">
-                    <Play size={28} className="text-secondary fill-current" />
-                    編集して夢を叶える
-                  </span>
+                  <div className="mb-6 bg-black/5 p-5 rounded-3xl group-hover:scale-110 transition-transform text-secondary">
+                    <Play size={40} fill="currentColor" />
+                  </div>
+                  <h3 className="text-3xl font-black mb-3">編集する</h3>
+                  <p className="text-foreground/40 font-bold mb-6 text-lg">技術を活かして夢を叶える</p>
+                  <div className="flex items-center gap-2 bg-black text-white px-8 py-3 rounded-2xl font-black text-xl shadow-lg">
+                    マーケットに入る <ArrowRight size={24} />
+                  </div>
                 </Link>
               </div>
 
-              {/* 注意書き */}
-              <p className="text-base font-bold text-foreground/30 flex items-center gap-2">
-                <Sparkles size={20} className="text-secondary" />
-                初心者・未経験者でも大歓迎のやさしいコミュニティ
-              </p>
+              {/* 信頼のマイクロコピー */}
+              <div className="bg-black/5 px-8 py-4 rounded-full flex items-center gap-3 backdrop-blur-sm border border-black/5">
+                <div className="flex -space-x-2">
+                  {[1,2,3].map(i => (
+                    <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-gray-200" />
+                  ))}
+                </div>
+                <p className="text-base font-bold text-foreground/40">
+                  <span className="text-foreground/60">1,200人以上</span>が参加中の温かいコミュニティ
+                </p>
+              </div>
             </div>
             </div>
           </motion.div>
