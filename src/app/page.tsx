@@ -110,33 +110,38 @@ export default function Home() {
             className="w-full text-center"
           >
 
-            {/* メインアクションボタン */}
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-14">
-              <Link 
-                href="/request/new" 
-                className="w-full sm:w-auto btn-primary flex items-center justify-center gap-3 group px-14 py-6 text-xl font-black rounded-2xl shadow-glow-primary hover:scale-[1.05] active:scale-[0.98] transition-all"
-              >
-                動画編集を依頼する
-                <ArrowRight size={26} className="group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link 
-                href="/market" 
-                className="w-full sm:w-auto flex items-center justify-center gap-3 px-14 py-6 text-xl font-black rounded-2xl bg-black/5 border border-black/10 text-foreground hover:bg-black/10 transition-all group"
-              >
-                <Play size={26} className="text-secondary group-hover:scale-110 transition-transform" fill="currentColor" />
-                編集して夢を叶える
-              </Link>
-            </div>
+            {/* 洗練されたアクションエリア (Refined Action Area) */}
+            <div className="flex flex-col items-center gap-10">
+              <div className="flex flex-col sm:flex-row gap-6 justify-center items-center w-full max-w-3xl mx-auto">
+                {/* 依頼者向けボタン: よりプレミアムで安心感のあるデザイン */}
+                <Link 
+                  href="/request/new" 
+                  className="w-full sm:flex-1 relative group overflow-hidden rounded-2xl p-[2px] transition-all hover:scale-[1.03] active:scale-[0.98]"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary via-accent to-secondary animate-gradient-xy opacity-80 group-hover:opacity-100 transition-opacity" />
+                  <div className="relative bg-white rounded-[14px] px-8 py-5 flex items-center justify-center gap-3">
+                    <span className="text-xl font-black bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">動画編集を依頼する</span>
+                    <ArrowRight size={24} className="text-primary group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </Link>
 
-            {/* ログインリンク */}
-            <div className="flex flex-col items-center gap-2">
-              <span className="text-xs font-bold text-foreground/30 uppercase tracking-widest">Already have an account?</span>
-              <Link 
-                href="/login" 
-                className="text-sm font-black text-foreground/50 hover:text-primary transition-colors flex items-center gap-1.5"
-              >
-                こちらからログイン <ArrowRight size={14} />
-              </Link>
+                <div className="hidden sm:block text-foreground/10 font-black italic text-2xl px-2">OR</div>
+
+                {/* 編集者向けボタン: シンプルながらプロフェッショナルな誠実さ */}
+                <Link 
+                  href="/market" 
+                  className="w-full sm:flex-1 group px-8 py-5 text-xl font-black rounded-2xl bg-black/5 border-2 border-black/5 text-foreground hover:bg-black/10 hover:border-black/10 transition-all flex items-center justify-center gap-3"
+                >
+                  <Play size={24} className="text-secondary fill-current group-hover:scale-110 transition-transform" />
+                  編集して夢を叶える
+                </Link>
+              </div>
+
+              {/* 注意書きや信頼性を示すマイクロコピー (任意) */}
+              <p className="text-sm font-bold text-foreground/30 flex items-center gap-2">
+                <Sparkles size={16} className="text-secondary" />
+                初心者・未経験者でも大歓迎のやさしいコミュニティ
+              </p>
             </div>
           </motion.div>
         </div>
