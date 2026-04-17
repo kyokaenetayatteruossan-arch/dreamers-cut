@@ -110,38 +110,37 @@ export default function Home() {
             className="w-full text-center"
           >
 
-            {/* 洗練されたアクションエリア (Refined Action Area) */}
-            <div className="flex flex-col items-center gap-10">
-              <div className="flex flex-col sm:flex-row gap-6 justify-center items-center w-full max-w-3xl mx-auto">
-                {/* 依頼者向けボタン: よりプレミアムで安心感のあるデザイン */}
+            {/* シンプルで大きな角丸ボタン (Simple Large Rounded Buttons) */}
+            <div className="flex flex-col items-center gap-12">
+              <div className="flex flex-col md:flex-row gap-8 justify-center items-stretch w-full max-w-4xl mx-auto px-4">
+                {/* 依頼者向けボタン */}
                 <Link 
                   href="/request/new" 
-                  className="w-full sm:flex-1 relative group overflow-hidden rounded-2xl p-[2px] transition-all hover:scale-[1.03] active:scale-[0.98]"
+                  className="flex-1 group bg-primary text-white px-10 py-8 text-2xl font-black rounded-[2.5rem] shadow-xl hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] transition-all flex flex-col items-center justify-center text-center gap-2"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary via-accent to-secondary animate-gradient-xy opacity-80 group-hover:opacity-100 transition-opacity" />
-                  <div className="relative bg-white rounded-[14px] px-8 py-5 flex items-center justify-center gap-3">
-                    <span className="text-xl font-black bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">動画編集を依頼する</span>
-                    <ArrowRight size={24} className="text-primary group-hover:translate-x-1 transition-transform" />
-                  </div>
+                  <span className="flex items-center gap-3">
+                    動画編集を依頼する <ArrowRight size={28} />
+                  </span>
                 </Link>
 
-                <div className="hidden sm:block text-foreground/10 font-black italic text-2xl px-2">OR</div>
-
-                {/* 編集者向けボタン: シンプルながらプロフェッショナルな誠実さ */}
+                {/* 編集者向けボタン */}
                 <Link 
                   href="/market" 
-                  className="w-full sm:flex-1 group px-8 py-5 text-xl font-black rounded-2xl bg-black/5 border-2 border-black/5 text-foreground hover:bg-black/10 hover:border-black/10 transition-all flex items-center justify-center gap-3"
+                  className="flex-1 group bg-white border-4 border-primary/20 text-foreground px-10 py-8 text-2xl font-black rounded-[2.5rem] shadow-xl hover:bg-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all flex flex-col items-center justify-center text-center gap-2"
                 >
-                  <Play size={24} className="text-secondary fill-current group-hover:scale-110 transition-transform" />
-                  編集して夢を叶える
+                  <span className="flex items-center gap-3">
+                    <Play size={28} className="text-secondary fill-current" />
+                    編集して夢を叶える
+                  </span>
                 </Link>
               </div>
 
-              {/* 注意書きや信頼性を示すマイクロコピー (任意) */}
-              <p className="text-sm font-bold text-foreground/30 flex items-center gap-2">
-                <Sparkles size={16} className="text-secondary" />
+              {/* 注意書き */}
+              <p className="text-base font-bold text-foreground/30 flex items-center gap-2">
+                <Sparkles size={20} className="text-secondary" />
                 初心者・未経験者でも大歓迎のやさしいコミュニティ
               </p>
+            </div>
             </div>
           </motion.div>
         </div>
