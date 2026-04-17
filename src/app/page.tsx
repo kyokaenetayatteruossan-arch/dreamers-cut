@@ -8,35 +8,35 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       {/* ===== Hero: 写真 + キャッチコピーだけ ===== */}
-      <section className="relative h-[65vh] md:h-screen min-h-[500px] flex items-center justify-center overflow-hidden">
+      <section className="relative h-screen min-h-screen flex items-center justify-center overflow-hidden">
         {/* Background Image & Overlays */}
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/hero_light.png"
             alt="Family Memories Cinematic"
             fill
-            className="object-cover brightness-110 object-center md:scale-105"
+            className="object-cover brightness-110 object-center scale-105"
             priority
           />
           {/* テキストを読みやすくするための微妙なグラデーション */}
-          <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-white/40" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-white/10" />
         </div>
 
         {/* コロッサルテキストレイアウト: 画面全体をキャンバスに使用 */}
-        <div className="absolute inset-0 z-10 pointer-events-none h-full flex flex-col justify-between py-12 px-6 md:block overflow-visible pt-[15vh] md:pt-0">
+        <div className="absolute inset-0 z-10 pointer-events-none h-full flex flex-col justify-center gap-16 px-6 md:block overflow-visible">
           {/* 左上パーツ / モバイルでは上部 */}
           <motion.div
-            initial={{ opacity: 0, x: -100 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, x: -150, y: -50 }}
+            animate={{ opacity: 1, x: 0, y: 0 }}
+            transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
             className="relative md:absolute md:top-[25vh] md:left-[5vw]"
           >
             <h1 
               style={{ 
-                fontSize: 'clamp(3.5rem, 10vw, 10rem)', 
-                lineHeight: '1.2',
-                textShadow: '0 10px 30px rgba(0,0,0,0.1)',
-                paddingTop: '0.2em'
+                fontSize: 'clamp(2rem, 8vw, 10rem)', 
+                lineHeight: '1.6',
+                textShadow: '0 20px 40px rgba(0,0,0,0.15)',
+                paddingTop: '0.6em'
               }}
               className="font-black tracking-tighter text-foreground whitespace-nowrap select-none text-left w-max"
             >
@@ -46,17 +46,17 @@ export default function Home() {
 
           {/* 右下パーツ / モバイルでは下部 */}
           <motion.div
-            initial={{ opacity: 0, x: 100 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1.2, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="relative md:absolute md:bottom-[20vh] md:right-[5vw] mb-8 md:mb-0"
+            initial={{ opacity: 0, x: 150, y: 50 }}
+            animate={{ opacity: 1, x: 0, y: 0 }}
+            transition={{ duration: 1.5, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="relative md:absolute md:bottom-[15vh] md:right-[5vw]"
           >
             <h1 
               style={{ 
-                fontSize: 'clamp(3rem, 10vw, 12rem)', 
-                lineHeight: '1.2',
-                textShadow: '0 20px 50px rgba(0,0,0,0.15)',
-                paddingTop: '0.2em'
+                fontSize: 'clamp(1.5rem, 8vw, 12rem)', 
+                lineHeight: '1.6',
+                textShadow: '0 30px 60px rgba(0,0,0,0.2)',
+                paddingTop: '0.5em'
               }}
               className="font-black tracking-tighter text-foreground text-right italic select-none whitespace-nowrap w-max ml-auto md:ml-0"
             >
