@@ -67,19 +67,13 @@ export default function Home() {
       </section>
 
       <section className="relative bg-background border-b border-black/5 overflow-visible">
-        {/* 空色バナー (Sky Blue Banner) - セクター外に配置して端まで届かせる */}
-        <div className="w-full relative overflow-visible">
-          <div 
-            style={{ backgroundColor: '#00bfff' }}
-            className="w-full px-4 md:px-14 py-8 md:py-16 border-y-4 border-white/20"
-          >
-            <h2 
-              style={{ color: 'white' }}
-              className="text-[1.8rem] xs:text-[2.2rem] md:text-7xl font-black tracking-tighter leading-none md:leading-tight text-center max-w-7xl mx-auto"
-            >
-              <span className="block md:inline whitespace-nowrap drop-shadow-md">何気ない動画が</span>
-              <span className="block md:inline md:ml-6 drop-shadow-lg scale-y-110">
-                ”<span style={{ color: '#ffff00' }}>一生モノの思い出</span>”に！
+        {/* 白バナー (White Banner) */}
+        <div className="w-full relative overflow-visible shadow-sm">
+          <div className="w-full px-4 md:px-14 py-8 md:py-16 bg-white border-y border-black/5">
+            <h2 className="text-black text-[1.8rem] xs:text-[2.2rem] md:text-7xl font-black tracking-tighter leading-none md:leading-tight text-center max-w-7xl mx-auto">
+              <span className="block md:inline whitespace-nowrap">何気ない動画が</span>
+              <span className="block md:inline md:ml-6 mt-1 md:mt-0 scale-y-110">
+                ”<span className="text-gradient">一生モノの思い出</span>”に！
               </span>
             </h2>
           </div>
