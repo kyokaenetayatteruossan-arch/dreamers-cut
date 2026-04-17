@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       {/* ===== Hero: 写真 + キャッチコピーだけ ===== */}
-      <section className="relative h-[70vh] md:h-screen min-h-[500px] flex items-center justify-center overflow-hidden bg-white">
+      <section className="relative h-[65vh] md:h-screen min-h-[500px] flex items-center justify-center overflow-hidden">
         {/* Background Image & Overlays */}
         <div className="absolute inset-0 z-0">
           <Image
